@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+        lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>게시글 상세</title>
+    <style>
+        .view-group { margin-bottom: 15px; border-bottom: 1px solid #ddd; }
+        .label { font-weight: bold; }
+        .content { margin: 10px 0; }
+        .btn-group { margin-top: 20px; float: right;}
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="view-group">
+        <span class="label">Title:</span>
+        <div class="content" th:text="${boardDto.boardTitle}"></div>
+    </div>
+
+    <div class="view-group">
+        <span class="label">Comment:</span>
+        <div class="content" th:text="${boardDto.boardComment}"></div>
+    </div>
+
+    <div class="view-group">
+        <span class="label">Writer:</span>
+        <div class="content" th:text="${boardDto.creator}"></div>
+    </div>
+
+    <div class="btn-group">
+        <a th:href="@{/board/list}" class="btn">List</a>
+        <a th:href="@{'/board/update/' + ${boardDto.boardType} + '/' + ${boardDto.boardNum}}" class="btn">Update</a>
+<!--        <th:block th:if="${session.user != null && session.user.name == board.creator}">-->
+<!--            <a th:href="@{'/board/update/' + ${board.board_type} + '/' + ${board.board_num}}" class="btn">수정</a>-->
+<!--        </th:block>-->
+    </div>
+</div>
+</body>
+</html>

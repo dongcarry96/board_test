@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+        xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 8px;
+            border: 1px solid #ddd;
+        }
+        .type-cell {
+            width: 80px;
+        }
+        .no-cell {
+            width: 60px;
+        }
+        .title-cell {
+            width: auto;
+        }
+        .pagination {
+            margin-top: 20px;
+        }
+        .board-type {
+            margin-bottom: 10px;
+        }
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+        }
+        .pagination ul {
+            display: flex;
+            list-style: none;
+            padding: 0;
+        }
+        .pagination li {
+            margin: 0 5px;
+        }
+        .pagination li.active a {
+            background-color: #007bff;
+            color: white;
+        }
+        .pagination li a {
+            padding: 5px 10px;
+            text-decoration: none;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+        }
+        .pagination li.disabled a {
+            color: #ccc;
+            pointer-events: none;
+        }
+        .button-group {
+            float: right;
+        }
+    </style>
+    <title>게시판 목록</title>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <a th:href="@{/member/login}" sec:authorize="isAnonymous()">Login</a>
+        <a th:href="@{/member/join}" sec:authorize="isAnonymous()">Join</a>
+    </div>
+    <span style="float: right;">
+        total: [[${boardList.totalElements}]]
+    </span>
+    <table>
+        <thead>
+        <tr>
+            <th class="type-cell">Type</th>
+            <th class="no-cell">No</th>
+            <th class="title-cell">Title</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="boardList : ${boardList}">
+            <td th:text="${boardList.boardType}"></td>
+            <td th:text="${boardList.boardNum}"></td>
+            <td>
+                <a th:href="@{'/board/read/' + ${boardList.boardType} + '/' + ${boardList.boardNum}}"
+                   th:text="${boardList.boardTitle}">제목</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <form th:action="@{/board/list}" method="get">
+        <div class="board-type">
+            <th:block th:each="menu, stat : ${menuCode}">
+                <input type="radio"
+                       name="type"
+                       th:value="${menu.codeId}"
+                       th:id="${'type-' + menu.codeId}"
+                       th:checked="${selectedType == menu.codeId}">
+                <label th:for="${'type-' + menu.codeId}" th:text="${menu.codeName}"></label>
+            </th:block>
+        </div>
+        <input type="hidden" name="page" th:value="${boardList.number}">
+        <input type="hidden" name="size" th:value="${boardList.size}">
+        <button type="submit">조회</button>
+    </form>
+
+    <!-- 페이징 처리 부분 -->
+    <div class="pagination" th:if="${boardList.totalPages > 0}">
+        <ul>
+            <!-- 이전 페이지 -->
+            <li th:class="${boardList.first ? 'disabled' : ''}">
+                <a th:if="${not boardList.first}"
+                   th:href="@{/board/list(page=${boardList.number -1}, size=${boardList.size}, type=${param.type})}">
+                    이전
+                </a>
+            </li>
+
+            <!-- 화면에 표시할 페이지 번호 -->
+            <li th:each="pageNum : ${#numbers.sequence(0, boardList.totalPages -1)}"
+                th:class="${pageNum == boardList.number ? 'active' : ''}">
+                <a th:href="@{/board/list(page=${pageNum}, size=${boardList.size}, type=${param.type})}"
+                   th:text="${pageNum + 1}"></a>
+            </li>
+
+            <!-- 다음 페이지 -->
+            <li th:class="${boardList.last ? 'disabled' : ''}">
+                <a th:if="${not boardList.last}"
+                   th:href="@{/board/list(page=${boardList.number + 1}, size=${boardList.size}, type=${param.type})}">
+                    다음
+                </a>
+
+            </li>
+        </ul>
+    </div>
+
+    <div class="button-group">
+    <a th:href="@{/board/register}" class="write-btn">글쓰기</a>
+    <a th:href="@{/member/login}" sec:authorize="isAuthenticated()">Logout</a>
+    </div>
+</div>
+</body>
+</html>

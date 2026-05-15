@@ -1,0 +1,24 @@
+spring:
+  session:
+    jdbc:
+      initialize-schema: always
+    timeout: 1800
+  datasource:
+    driver-class-name: oracle.jdbc.OracleDriver
+    url: jdbc:oracle:thin:@(description=(retry_count=20)(retry_delay=3)(address=(protocol=tcps)(port=1521)(host=adb.ap-chuncheon-1.oraclecloud.com))(connect_data=(service_name=g984daf87149dcc_dong_high.adb.oraclecloud.com))(security=(ssl_server_dn_match=yes)))
+    username: admin
+    password: Sunrise@243@243
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+  application:
+    name: test
+
+server:
+  port: 8080
