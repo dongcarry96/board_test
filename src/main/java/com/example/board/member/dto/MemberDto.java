@@ -1,7 +1,6 @@
 package com.example.board.member.dto;
 
 import com.example.board.member.domain.Member;
-import jakarta.persistence.Column;
 import lombok.*;
 
 import java.io.Serializable;
@@ -22,13 +21,9 @@ public class MemberDto implements Serializable {
     private String userAddr1;
     private String userAddr2;
     private String userCompany;
-    private String creator;
-    private String createTime;
-    private String modifier;
-    private String modifiedTime;
 
-    public Member memberJoin() {
-        Member member = Member.builder()
+    public Member toEntity() {
+        return Member.builder()
                 .userId(userId)
                 .userPw(userPw)
                 .userName(userName)
@@ -38,11 +33,6 @@ public class MemberDto implements Serializable {
                 .userAddr1(userAddr1)
                 .userAddr2(userAddr2)
                 .userCompany(userCompany)
-                .creator(creator)
-                .createTime(createTime)
-                .modifier(modifier)
-                .modifiedTime(modifiedTime)
                 .build();
-        return member;
     }
 }

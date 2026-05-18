@@ -5,6 +5,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Getter
 @Entity
@@ -12,46 +15,49 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 @Table(name = "USER_INFO")
+@EntityListeners(AuditingEntityListener.class)
 public class Member {
 
     @Id
-    @Column(name = "USER_ID", length = 15)
+    @Column(name = "USER_ID")
     private String userId;
 
-    @Column(name = "USER_PW", length = 16)
+    @Column(name = "USER_PW")
     private String userPw;
 
-    @Column(name = "USER_NAME", length = 15)
+    @Column(name = "USER_NAME")
     private String userName;
 
-    @Column(name = "USER_PHONE1", length = 3)
+    @Column(name = "USER_PHONE1")
     private String userPhone1;
 
-    @Column(name = "USER_PHONE2", length = 4)
+    @Column(name = "USER_PHONE2")
     private String userPhone2;
 
-    @Column(name = "USER_PHONE3", length = 4)
+    @Column(name = "USER_PHONE3")
     private String userPhone3;
 
-    @Column(name = "USER_ADDR1", length = 8)
+    @Column(name = "USER_ADDR1")
     private String userAddr1;
 
-    @Column(name = "USER_ADDR2", length = 150)
+    @Column(name = "USER_ADDR2")
     private String userAddr2;
 
-    @Column(name = "USER_COMPANY", length = 60)
+    @Column(name = "USER_COMPANY")
     private String userCompany;
 
-    @Column(name = "CREATOR", length = 15)
+    @Column(name = "CREATOR")
     private String creator;
 
-    @Column(name = "CREATE_TIME", length = 14)
+    @CreatedDate
+    @Column(name = "CREATE_TIME")
     private String createTime;
 
-    @Column(name = "MODIFIER", length = 15)
+    @Column(name = "MODIFIER")
     private String modifier;
 
-    @Column(name = "MODIFIED_TIME", length = 14)
+    @LastModifiedDate
+    @Column(name = "MODIFIED_TIME")
     private String modifiedTime;
 
 }

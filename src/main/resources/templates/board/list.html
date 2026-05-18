@@ -79,10 +79,10 @@
         </thead>
         <tbody>
         <tr th:each="boardList : ${boardList}">
-            <td th:text="${boardList.boardType}"></td>
-            <td th:text="${boardList.boardNum}"></td>
+            <td th:text="${boardList.id.boardType}"></td>
+            <td th:text="${boardList.id.boardNum}"></td>
             <td>
-                <a th:href="@{'/board/read/' + ${boardList.boardType} + '/' + ${boardList.boardNum}}"
+                <a th:href="@{'/board/read/' + ${boardList.id.boardType} + '/' + ${boardList.id.boardNum}}"
                    th:text="${boardList.boardTitle}">제목</a>
             </td>
         </tr>
@@ -94,10 +94,10 @@
             <th:block th:each="menu, stat : ${menuCode}">
                 <input type="radio"
                        name="type"
-                       th:value="${menu.codeId}"
-                       th:id="${'type-' + menu.codeId}"
-                       th:checked="${selectedType == menu.codeId}">
-                <label th:for="${'type-' + menu.codeId}" th:text="${menu.codeName}"></label>
+                       th:value="${menu.id.codeId}"
+                       th:id="${'type-' + menu.id.codeId}"
+                       th:checked="${selectedType == menu.id.codeId}">
+                <label th:for="${'type-' + menu.id.codeId}" th:text="${menu.id.codeName}"></label>
             </th:block>
         </div>
         <input type="hidden" name="page" th:value="${boardList.number}">

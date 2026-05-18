@@ -13,7 +13,7 @@ public class MemberService {
     private final MemberRepository memberRepository;
 
     public void save(MemberDto memberDto) {
-        Member member = memberDto.memberJoin();
+        Member member = memberDto.toEntity();
         memberRepository.save(member);
     }
 

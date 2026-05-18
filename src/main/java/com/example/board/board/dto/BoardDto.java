@@ -1,0 +1,48 @@
+package com.example.board.board.dto;
+
+import com.example.board.board.domain.Board;
+import com.example.board.board.domain.BoardId;
+import lombok.*;
+
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class BoardDto {
+    private String boardType;
+    private Integer boardNum;
+    private String boardTitle;
+    private String boardComment;
+    private String creator;
+    private String createTime;
+    private String modifier;
+    private String modifiedTime;
+    private String fileRoot;
+
+    // Entity → DTO
+    public static BoardDto fromEntity(Board board) {
+        return BoardDto.builder()
+                .boardType(board.getId().getBoardType())
+                .boardNum(board.getId().getBoardNum())
+                .boardTitle(board.getBoardTitle())
+                .boardComment(board.getBoardComment())
+                .creator(board.getCreator())
+                .createTime(board.getCreateTime())
+                .modifier(board.getModifier())
+                .modifiedTime(board.getModifiedTime())
+                .fileRoot(board.getFileRoot())
+                .build();
+    }
+
+    // DTO → Entity
+    public Board toEntity() {
+        return Board.builder()
+                .id(new BoardId(boardType, boardNum))
+                .boardTitle(boardTitle)
+                .boardComment(boardComment)
+                .creator(creator)
+                .createTime(createTime)
+                .build();
+    }
+}
