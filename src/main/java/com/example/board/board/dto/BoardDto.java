@@ -20,7 +20,6 @@ public class BoardDto {
     private String modifiedTime;
     private String fileRoot;
 
-    // Entity → DTO
     public static BoardDto fromEntity(Board board) {
         return BoardDto.builder()
                 .boardType(board.getId().getBoardType())
@@ -35,7 +34,6 @@ public class BoardDto {
                 .build();
     }
 
-    // DTO → Entity
     public Board toEntity() {
         return Board.builder()
                 .id(new BoardId(boardType, boardNum))

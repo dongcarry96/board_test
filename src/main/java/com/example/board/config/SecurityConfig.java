@@ -1,5 +1,6 @@
 package com.example.board.config;
 
+import jakarta.servlet.http.HttpSession;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -22,13 +23,28 @@ public class SecurityConfig {
                         .loginProcessingUrl("/member/login")
                         .usernameParameter("userId")
                         .passwordParameter("userPw")
-                        .defaultSuccessUrl("/board/list")
+                        .successHandler((request, response, authentication) -> {
+                            HttpSession session = request.getSession();
+                            session.setAttribute("loginUser", authentication.getName());
+                            response.sendRedirect("/board/list");
+                        })
                         .permitAll()
                 )
                 .logout(logout -> logout
                         .logoutUrl("/member/logout")
                         .logoutSuccessUrl("/member/login")
-                );
+                        .addLogoutHandler((request, response, authentication) -> {
+                            HttpSession session = request.getSession();
+                            session.invalidate();
+                        })
+                        .logoutSuccessHandler((request, response, authentication) ->
+                                response.sendRedirect("/board/list"))
+                        .deleteCookies("JSESSIONID", "access_token"));
         return http.build();
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 }

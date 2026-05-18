@@ -78,12 +78,14 @@
         </tr>
         </thead>
         <tbody>
-        <tr th:each="boardList : ${boardList}">
-            <td th:text="${boardList.id.boardType}"></td>
-            <td th:text="${boardList.id.boardNum}"></td>
+        <tr th:each="board : ${boardList.content}">
+            <td th:text="${boardTypeMap[board.boardType]}"></td>
+            <td th:text="${board.boardNum}"></td>
+
             <td>
-                <a th:href="@{'/board/read/' + ${boardList.id.boardType} + '/' + ${boardList.id.boardNum}}"
-                   th:text="${boardList.boardTitle}">제목</a>
+                <a th:href="@{'/board/read/' + ${board.boardType} + '/' + ${board.boardNum}}"
+                   th:text="${board.boardTitle}">
+                </a>
             </td>
         </tr>
         </tbody>
@@ -97,7 +99,7 @@
                        th:value="${menu.id.codeId}"
                        th:id="${'type-' + menu.id.codeId}"
                        th:checked="${selectedType == menu.id.codeId}">
-                <label th:for="${'type-' + menu.id.codeId}" th:text="${menu.id.codeName}"></label>
+                <label th:for="${'type-' + menu.id.codeId}" th:text="${menu.codeName}"></label>
             </th:block>
         </div>
         <input type="hidden" name="page" th:value="${boardList.number}">
@@ -136,7 +138,10 @@
 
     <div class="button-group">
     <a th:href="@{/board/register}" class="write-btn">글쓰기</a>
-    <a th:href="@{/member/login}" sec:authorize="isAuthenticated()">Logout</a>
+        <form th:action="@{/member/logout}" method="post" sec:authorize="isAuthenticated()" style="display:inline;">
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+            <button type="submit" style="background:none; border:none; cursor:pointer;">Logout</button>
+        </form>
     </div>
 </div>
 </body>

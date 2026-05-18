@@ -14,7 +14,7 @@ import java.io.Serializable;
 @Embeddable
 public class BoardId implements Serializable {
 
-    @Column(name = "BOARD_TYPE", length = 5)
+    @Column(name = "BOARD_TYPE")
     private String boardType;
 
     @Column(name = "BOARD_NUM")

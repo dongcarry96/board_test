@@ -15,22 +15,22 @@
 <div class="container">
     <div class="view-group">
         <span class="label">Title:</span>
-        <div class="content" th:text="${boardDto.boardTitle}"></div>
+        <div class="content" th:text="${board.boardTitle}"></div>
     </div>
 
     <div class="view-group">
         <span class="label">Comment:</span>
-        <div class="content" th:text="${boardDto.boardComment}"></div>
+        <div class="content" th:text="${board.boardComment}"></div>
     </div>
 
     <div class="view-group">
         <span class="label">Writer:</span>
-        <div class="content" th:text="${boardDto.creator}"></div>
+        <div class="content" th:text="${board.creator}"></div>
     </div>
 
     <div class="btn-group">
         <a th:href="@{/board/list}" class="btn">List</a>
-        <a th:href="@{'/board/update/' + ${boardDto.boardType} + '/' + ${boardDto.boardNum}}" class="btn">Update</a>
+        <a th:href="@{'/board/update/' + ${board.boardType} + '/' + ${board.boardNum}}" class="btn">Update</a>
 <!--        <th:block th:if="${session.user != null && session.user.name == board.creator}">-->
 <!--            <a th:href="@{'/board/update/' + ${board.board_type} + '/' + ${board.board_num}}" class="btn">수정</a>-->
 <!--        </th:block>-->

@@ -19,9 +19,8 @@
             <select id="Type" name="boardType" required>
                 <option value="" disabled selected>게시글 타입 선택</option>
                 <option th:each="menu : ${comCodes}"
-                        th:value="${menu.codeName}"
-                        th:text="${menu.codeName}"
-                        th:selected="${menu.codeName == boardDto.boardType}">
+                        th:value="${menu.id.codeId}"
+                        th:text="${menu.codeName}">
                 </option>
             </select>
 
@@ -32,12 +31,12 @@
 
         <div class="form-group">
             <label>Comment</label>
-            <textarea name="boardComment" th:value="${boardDto.boardComment}"></textarea>
+            <textarea name="boardComment" th:text="${boardDto.boardComment}"></textarea>
         </div>
 
         <div class="form-group">
             <label>Writer</label>
-            <input type="text" th:value="${boardDto.creator}" readonly>
+            <input type="text" name="creator" th:value="${boardDto.creator}" readonly>
         </div>
 
         <div class="btn-group">

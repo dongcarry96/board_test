@@ -6,6 +6,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Getter
 @Entity
@@ -13,6 +16,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 @Table(name = "BOARD")
+@EntityListeners(AuditingEntityListener.class)
 public class Board {
 
     @EmbeddedId
@@ -27,12 +31,14 @@ public class Board {
     @Column(name = "CREATOR")
     private String creator;
 
+    @CreatedDate
     @Column(name = "CREATE_TIME")
     private String createTime;
 
     @Column(name = "MODIFIER")
     private String modifier;
-    
+
+    @LastModifiedDate
     @Column(name = "MODIFIED_TIME")
     private String modifiedTime;
 

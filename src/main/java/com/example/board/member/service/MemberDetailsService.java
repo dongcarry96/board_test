@@ -23,6 +23,7 @@ public class MemberDetailsService implements UserDetailsService {
         return User.builder()
                 .username(member.getUserId())
                 .password(member.getUserPw())
+                .roles("USER")
                 .build();
     }
 }

@@ -2,6 +2,7 @@ package com.example.board.member.dto;
 
 import com.example.board.member.domain.Member;
 import lombok.*;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.io.Serializable;
 
@@ -22,10 +23,10 @@ public class MemberDto implements Serializable {
     private String userAddr2;
     private String userCompany;
 
-    public Member toEntity() {
+    public Member toEntity(PasswordEncoder passwordEncoder) {
         return Member.builder()
                 .userId(userId)
-                .userPw(userPw)
+                .userPw(passwordEncoder.encode(userPw))
                 .userName(userName)
                 .userPhone1(userPhone1)
                 .userPhone2(userPhone2)
