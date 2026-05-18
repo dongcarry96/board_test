@@ -13,10 +13,10 @@ public class ComCodeService {
     private final ComCodeRepository comCodeRepository;
 
     public List<ComCode> getPhoneCodes() {
-        return comCodeRepository.findByIdCodeType("PHONE");
+        return comCodeRepository.findByIdCodeType("phone");
     }
 
     public List<ComCode> getBoardTypeCodes() {
-        return comCodeRepository.findByIdCodeType("MENU");
+        return comCodeRepository.findByIdCodeType("menu");
     }
 }
