@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <style>
@@ -109,7 +109,8 @@
             </div>
 
             <div class="links">
-            <button type="submit">Login</button>
+                <button type="submit">Login</button>
+                <a th:href="@{/member/join}" sec:authorize="isAnonymous()">Join</a>
             </div>
         </form>
     </div>

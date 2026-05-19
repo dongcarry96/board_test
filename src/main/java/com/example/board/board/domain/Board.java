@@ -28,6 +28,9 @@ public class Board {
     @Column(name = "BOARD_COMMENT")
     private String boardComment;
 
+    @Column(name = "BOARD_HIT")
+    private Integer boardHit;
+
     @Column(name = "CREATOR")
     private String creator;
 

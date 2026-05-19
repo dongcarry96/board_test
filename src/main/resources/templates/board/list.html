@@ -11,6 +11,7 @@
         th, td {
             padding: 8px;
             border: 1px solid #ddd;
+            text-align: center;
         }
         .type-cell {
             width: 80px;
@@ -75,6 +76,8 @@
             <th class="type-cell">Type</th>
             <th class="no-cell">No</th>
             <th class="title-cell">Title</th>
+            <th class="hit-cell">Hit</th>
+            <th class="del-cell">삭제</th>
         </tr>
         </thead>
         <tbody>
@@ -87,6 +90,14 @@
                    th:text="${board.boardTitle}">
                 </a>
             </td>
+
+            <td th:text="${board.boardHit}"></td>
+            <th>
+                <button
+                    th:action="@{/board/del/${board.boardType}/${board.boardNum}}"
+                    th:method="post">삭제
+                </button>
+            </th>
         </tr>
         </tbody>
     </table>
