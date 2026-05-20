@@ -16,6 +16,9 @@
         .type-cell {
             width: 80px;
         }
+        .create-cell {
+            width: 180px;
+        }
         .no-cell {
             width: 60px;
         }
@@ -76,8 +79,9 @@
             <th class="type-cell">Type</th>
             <th class="no-cell">No</th>
             <th class="title-cell">Title</th>
-            <th class="hit-cell">Hit</th>
-            <th class="del-cell">삭제</th>
+            <th class="create-cell">생성일자</th>
+            <th class="no-cell">Hit</th>
+            <th class="no-cell">삭제</th>
         </tr>
         </thead>
         <tbody>
@@ -90,13 +94,13 @@
                    th:text="${board.boardTitle}">
                 </a>
             </td>
-
+            <td th:text="${board.createTime}"></td>
             <td th:text="${board.boardHit}"></td>
             <th>
-                <button
-                    th:action="@{/board/del/${board.boardType}/${board.boardNum}}"
-                    th:method="post">삭제
-                </button>
+                <form th:action="@{'/board/delete/' + ${board.boardType} + '/' + ${board.boardNum}}"
+                      method="post">
+                    <button type="submit">삭제</button>
+                </form>
             </th>
         </tr>
         </tbody>

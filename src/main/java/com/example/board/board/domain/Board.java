@@ -48,4 +48,7 @@ public class Board {
     @Column(name = "FILE_ROOT")
     private String fileRoot;
 
+    public void increaseHit() {
+        this.boardHit++;
+    }
 }

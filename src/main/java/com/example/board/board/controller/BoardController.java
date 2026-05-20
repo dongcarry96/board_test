@@ -134,4 +134,11 @@ public class BoardController {
 
         return "redirect:/board/read/" + type + "/" + num;
     }
+
+    @PostMapping("/delete/{type}/{num}")
+    public String boardDelete(@PathVariable String type,
+                              @PathVariable Integer num) {
+        boardService.delete(type, num);
+        return "redirect:/board/list";
+    }
 }

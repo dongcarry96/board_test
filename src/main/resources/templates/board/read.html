@@ -37,14 +37,24 @@
         <span class="label">Writer:</span>
         <div class="content" th:text="${board.creator}"></div>
     </div>
+    <div>
+        <span class="label">조회수</span>
+        <div class="content" th:text="${board.boardHit}"></div>
+    </div>
+    <div>
+
+        <form th:action="@{'/board/delete/' + ${board.boardType} + '/' + ${board.boardNum}}"
+              method="post">
+            <button type="submit">삭제</button>
+        </form>
+    </div>
 
     <div class="btn-group">
         <a th:href="@{/board/list}" class="btn">List</a>
         <a th:href="@{'/board/update/' + ${board.boardType} + '/' + ${board.boardNum}}" class="btn">Update</a>
-<!--        <th:block th:if="${session.user != null && session.user.name == board.creator}">-->
-<!--            <a th:href="@{'/board/update/' + ${board.board_type} + '/' + ${board.board_num}}" class="btn">수정</a>-->
-<!--        </th:block>-->
     </div>
+
+
 </div>
 </body>
 </html>

@@ -46,4 +46,5 @@ public class BoardDto {
                 .createTime(createTime)
                 .build();
     }
+
 }
