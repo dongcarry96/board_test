@@ -14,6 +14,7 @@ public class BoardDto {
     private Integer boardNum;
     private String boardTitle;
     private String boardComment;
+    private Integer boardHit;
     private String creator;
     private String createTime;
     private String modifier;
@@ -26,6 +27,7 @@ public class BoardDto {
                 .boardNum(board.getId().getBoardNum())
                 .boardTitle(board.getBoardTitle())
                 .boardComment(board.getBoardComment())
+                .boardHit(board.getBoardHit())
                 .creator(board.getCreator())
                 .createTime(board.getCreateTime())
                 .modifier(board.getModifier())
@@ -39,8 +41,10 @@ public class BoardDto {
                 .id(new BoardId(boardType, boardNum))
                 .boardTitle(boardTitle)
                 .boardComment(boardComment)
+                .boardHit(boardHit)
                 .creator(creator)
                 .createTime(createTime)
                 .build();
     }
+
 }

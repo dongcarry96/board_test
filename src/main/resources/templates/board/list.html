@@ -11,9 +11,13 @@
         th, td {
             padding: 8px;
             border: 1px solid #ddd;
+            text-align: center;
         }
         .type-cell {
             width: 80px;
+        }
+        .create-cell {
+            width: 180px;
         }
         .no-cell {
             width: 60px;
@@ -75,6 +79,9 @@
             <th class="type-cell">Type</th>
             <th class="no-cell">No</th>
             <th class="title-cell">Title</th>
+            <th class="create-cell">생성일자</th>
+            <th class="no-cell">Hit</th>
+            <th class="no-cell">삭제</th>
         </tr>
         </thead>
         <tbody>
@@ -87,6 +94,14 @@
                    th:text="${board.boardTitle}">
                 </a>
             </td>
+            <td th:text="${board.createTime}"></td>
+            <td th:text="${board.boardHit}"></td>
+            <th>
+                <form th:action="@{'/board/delete/' + ${board.boardType} + '/' + ${board.boardNum}}"
+                      method="post">
+                    <button type="submit">삭제</button>
+                </form>
+            </th>
         </tr>
         </tbody>
     </table>

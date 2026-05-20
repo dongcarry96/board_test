@@ -32,24 +32,24 @@ public class BoardService {
         Integer maxNum = boardRepository.findMaxBoardNum(boardDto.getBoardType());
         int newNum = maxNum + 1;
         Board board = Board.builder()
-                .id(new BoardId(
-                        boardDto.getBoardType(),
-                        newNum
-                ))
-                .boardTitle(boardDto.getBoardTitle())
-                .boardComment(boardDto.getBoardComment())
-                .creator(boardDto.getCreator())
-                .createTime(String.valueOf(System.currentTimeMillis()))
-                .build();
+                            .id(new BoardId(
+                            boardDto.getBoardType(),
+                            newNum))
+                            .boardTitle(boardDto.getBoardTitle())
+                            .boardComment(boardDto.getBoardComment())
+                            .boardHit(0)
+                            .creator(boardDto.getCreator())
+                            .createTime(String.valueOf(System.currentTimeMillis()))
+                            .build();
         boardRepository.save(board);
     }
 
+    @Transactional
     public BoardDto getBoard(String type, Integer num) {
-
         Board board = boardRepository.findById(
                 new BoardId(type, num)
         ).orElseThrow();
-
+        board.increaseHit();
         return BoardDto.fromEntity(board);
     }
 
@@ -63,6 +63,7 @@ public class BoardService {
                 .id(board.getId())
                 .boardTitle(boardDto.getBoardTitle())
                 .boardComment(boardDto.getBoardComment())
+                .boardHit(board.getBoardHit())
                 .creator(board.getCreator())
                 .createTime(board.getCreateTime())
                 .modifier(boardDto.getModifier())
@@ -70,5 +71,11 @@ public class BoardService {
                 .build();
 
         boardRepository.save(board);
+    }
+
+    @Transactional
+    public void delete(String type, Integer num) {
+        BoardId boardId = new BoardId(type, num);
+        boardRepository.deleteById(boardId);
     }
 }

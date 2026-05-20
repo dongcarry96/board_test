@@ -72,8 +72,9 @@
     <h2>회원가입</h2>
 
     <div class="form-group">
-        <a th:href="@{/board/list}">List</a>
+        <a th:href="@{/member/login}">login</a>
     </div>
+
     <form th:action="@{/member/join}" method="post" onsubmit="return validateForm()">
 
         <!-- 에러 메시지 표시 영역 -->

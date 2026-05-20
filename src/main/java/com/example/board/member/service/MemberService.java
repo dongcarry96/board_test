@@ -23,6 +23,4 @@ public class MemberService {
         return memberRepository.findByUserId(userId).isEmpty();
     }
 
-
-
 }

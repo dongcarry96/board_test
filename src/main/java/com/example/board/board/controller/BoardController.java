@@ -66,8 +66,19 @@ public class BoardController {
 
         BoardDto board =
                 boardService.getBoard(type, num);
+        if ("a01".equals(type)) {
+            type = "일반";
+        } else if ("a02".equals(type)) {
+            type = "Q&A";
+        } else if ("a03".equals(type)) {
+            type = "익명";
+        } else {
+            type = "자유";
+        }
 
         model.addAttribute("board", board);
+        model.addAttribute("type",type);
+        model.addAttribute("num",num);
 
         return "/board/read";
     }
@@ -103,6 +114,7 @@ public class BoardController {
                                   Model model) {
         BoardDto board = boardService.getBoard(type, num);
         model.addAttribute("boardDto", board);
+        model.addAttribute("comCodes", comCodeService.getBoardTypeCodes());
         return "/board/update";
     }
 
@@ -121,5 +133,12 @@ public class BoardController {
         boardService.update(boardDto);
 
         return "redirect:/board/read/" + type + "/" + num;
+    }
+
+    @PostMapping("/delete/{type}/{num}")
+    public String boardDelete(@PathVariable String type,
+                              @PathVariable Integer num) {
+        boardService.delete(type, num);
+        return "redirect:/board/list";
     }
 }
