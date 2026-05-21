@@ -15,6 +15,10 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http, CustomAuthenticationEntryPoint customAuthenticationEntryPoint) throws Exception {
         http
+//                .cors((cors) -> cors
+//                        .configurationSource(myWebsiteConfigurationSource())
+//                )
+
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/member/**").permitAll()
                         .anyRequest().authenticated()
