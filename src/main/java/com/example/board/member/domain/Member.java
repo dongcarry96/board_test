@@ -28,6 +28,12 @@ public class Member {
     @Column(name = "USER_NAME")
     private String userName;
 
+    @Column(name = "USER_EMAIL")
+    private String userEmail;
+
+    @Column(name = "EMAIL_VERIFIED")
+    private String emailVerified;
+
     @Column(name = "USER_PHONE1")
     private String userPhone1;
 

@@ -1,6 +1,7 @@
 package com.example.board.member.dto;
 
 import com.example.board.member.domain.Member;
+import jakarta.persistence.Column;
 import lombok.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -16,6 +17,8 @@ public class MemberDto implements Serializable {
     private String userId;
     private String userPw;
     private String userName;
+    private String userEmail;
+    private String emailVerified;
     private String userPhone1;
     private String userPhone2;
     private String userPhone3;
@@ -28,6 +31,8 @@ public class MemberDto implements Serializable {
                 .userId(userId)
                 .userPw(passwordEncoder.encode(userPw))
                 .userName(userName)
+                .userEmail(userEmail)
+                .emailVerified(emailVerified)
                 .userPhone1(userPhone1)
                 .userPhone2(userPhone2)
                 .userPhone3(userPhone3)
