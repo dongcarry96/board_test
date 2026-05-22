@@ -49,6 +49,24 @@
         </form>
     </div>
 
+    <div>
+        <ul>
+            <div th:if="${prevBoard != null}">
+                <span>이전글 :</span>
+                <a th:href="@{'/board/read/' + ${prevBoard.boardType} + '/' + ${prevBoard.boardNum}}"
+                   th:text="${prevBoard.boardTitle}">
+                </a>
+            </div>
+
+            <div th:if="${nextBoard != null}">
+                <span>다음글 :</span>
+                <a th:href="@{'/board/read/' + ${nextBoard.boardType} + '/' + ${nextBoard.boardNum}}"
+                   th:text="${nextBoard.boardTitle}">
+                </a>
+            </div>
+        </ul>
+    </div>
+
     <div class="btn-group">
         <a th:href="@{/board/list}" class="btn">List</a>
         <a th:href="@{'/board/update/' + ${board.boardType} + '/' + ${board.boardNum}}" class="btn">Update</a>

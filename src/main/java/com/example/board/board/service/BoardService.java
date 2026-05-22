@@ -69,6 +69,18 @@ public class BoardService {
         return BoardDto.fromEntity(board);
     }
 
+    public BoardDto PrevBoard(String type, Integer num) {
+        return boardRepository.findPrevBoard(type, num)
+                .map(BoardDto::fromEntity)
+                .orElse(null);
+    }
+
+    public BoardDto NextBoard(String type, Integer num) {
+        return boardRepository.findNextBoard(type, num)
+                .map(BoardDto::fromEntity)
+                .orElse(null);
+    }
+
     @Transactional
     public void update(BoardDto boardDto) {
         Board board = boardRepository.findById(

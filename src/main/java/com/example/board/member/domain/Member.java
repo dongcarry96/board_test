@@ -28,7 +28,7 @@ public class Member {
     @Column(name = "USER_NAME")
     private String userName;
 
-    @Column(name = "USER_EMAIL")
+    @Column(name = "USER_EMAIL", unique = true   )
     private String userEmail;
 
     @Column(name = "EMAIL_VERIFIED")

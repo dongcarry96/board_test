@@ -37,38 +37,32 @@ public class BoardController {
             Model model
     ) {
         Pageable pageable = PageRequest.of(page, size);
-
         Page<BoardDto> boardList = boardService.getBoardList(type, pageable, sort);
-
         model.addAttribute("boardList", boardList);
         model.addAttribute("selectedTypes", type != null ? type : List.of());
         model.addAttribute("selectedSort", sort);
         model.addAttribute("menuCode", comCodeService.getBoardTypeCodes());
-
         Map<String, String> boardTypeMap = new HashMap<>();
-
         for (ComCode code : comCodeService.getBoardTypeCodes()) {
             boardTypeMap.put(
                     code.getId().getCodeId(),
                     code.getCodeName()
+
             );
         }
-
         model.addAttribute("boardTypeMap", boardTypeMap);
-
         return "/board/list";
     }
-
-
     @GetMapping("/read/{type}/{num}")
     public String boardRead(
             @PathVariable String type,
             @PathVariable Integer num,
             Model model
     ) {
-
         BoardDto board =
                 boardService.getBoard(type, num);
+        BoardDto prevBoard = boardService.PrevBoard(type, num);
+        BoardDto nextBoard = boardService.NextBoard(type, num);
         if ("a01".equals(type)) {
             type = "일반";
         } else if ("a02".equals(type)) {
@@ -78,11 +72,11 @@ public class BoardController {
         } else {
             type = "자유";
         }
-
         model.addAttribute("board", board);
         model.addAttribute("type",type);
         model.addAttribute("num",num);
-
+        model.addAttribute("prevBoard", prevBoard);
+        model.addAttribute("nextBoard", nextBoard);
         return "/board/read";
     }
 
@@ -98,7 +92,6 @@ public class BoardController {
         model.addAttribute("comCodes", comCodeService.getBoardTypeCodes());
         return "/board/register";
     }
-
     @PostMapping("/register")
     public String boardRegister(BoardDto boardDto,
                                 @AuthenticationPrincipal UserDetails userDetails
@@ -106,7 +99,6 @@ public class BoardController {
         if (userDetails != null) {
             boardDto.setCreator(userDetails.getUsername());
         }
-
         boardService.register(boardDto);
         return "redirect:/board/list";
     }

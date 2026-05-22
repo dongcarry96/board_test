@@ -72,7 +72,6 @@ public class MemberController {
             case "expired" -> "redirect:/member/login?verify=expired";
             case "invalid" -> "redirect:/member/login?verify=invalid";
             default -> {
-                // result = userId
                 memberService.verifyEmail(result);
                 yield "redirect:/member/login?verify=success";
             }
@@ -86,7 +85,7 @@ public class MemberController {
         return Map.of("available", result);
     }
 
-    @PostMapping("/api/login")
+    @PostMapping("/login")
     @ResponseBody
     public ResponseEntity<?> apiLogin(@RequestBody Map<String, String> loginRequest,
                                       HttpServletResponse response) {
@@ -100,7 +99,6 @@ public class MemberController {
 
             String token = jwtTokenProvider.generateToken(authentication.getName());
 
-            // 쿠키에 토큰 저장
             Cookie cookie = new Cookie("access_token", token);
             cookie.setHttpOnly(true);
             cookie.setPath("/");
