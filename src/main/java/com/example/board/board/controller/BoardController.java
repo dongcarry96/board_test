@@ -16,6 +16,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Slf4j
@@ -30,16 +31,18 @@ public class BoardController {
     @GetMapping("/list")
     public String boardList(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "5") int size,
-            @RequestParam(required = false) String type,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false) List<String> type,
+            @RequestParam(defaultValue = "date") String sort,
             Model model
     ) {
         Pageable pageable = PageRequest.of(page, size);
 
-        Page<BoardDto> boardList = boardService.getBoardList(type, pageable);
+        Page<BoardDto> boardList = boardService.getBoardList(type, pageable, sort);
 
         model.addAttribute("boardList", boardList);
-        model.addAttribute("selectedType", type);
+        model.addAttribute("selectedTypes", type != null ? type : List.of());
+        model.addAttribute("selectedSort", sort);
         model.addAttribute("menuCode", comCodeService.getBoardTypeCodes());
 
         Map<String, String> boardTypeMap = new HashMap<>();

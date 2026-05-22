@@ -17,12 +17,10 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
                          HttpServletResponse response,
                          AuthenticationException authException) throws IOException {
 
-        response.setContentType("text/html; charset=UTF-8");
+        response.setContentType("application/json; charset=UTF-8");
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED); // 401
         response.getWriter().write("""
-                <script>
-                    alert('로그인 후 이용 가능한 서비스입니다.');
-                    location.href = '/member/login';
-                </script>
-                """);
+        {"message": "로그인이 필요합니다.", "status": 401}
+        """);
     }
 }

@@ -108,16 +108,26 @@
 
     <form th:action="@{/board/list}" method="get">
         <div class="board-type">
-            <th:block th:each="menu, stat : ${menuCode}">
-                <input type="radio"
+            <!-- radio → checkbox, selectedType → selectedTypes -->
+            <th:block th:each="menu : ${menuCode}">
+                <input type="checkbox"
                        name="type"
                        th:value="${menu.id.codeId}"
                        th:id="${'type-' + menu.id.codeId}"
-                       th:checked="${selectedType == menu.id.codeId}">
+                       th:checked="${selectedTypes.contains(menu.id.codeId)}">
                 <label th:for="${'type-' + menu.id.codeId}" th:text="${menu.codeName}"></label>
             </th:block>
         </div>
-        <input type="hidden" name="page" th:value="${boardList.number}">
+        <div style="margin: 8px 0;">
+            <input type="radio" name="sort" value="date" id="sort-date"
+                   th:checked="${selectedSort == 'date'}">
+            <label for="sort-date">최신순</label>
+
+            <input type="radio" name="sort" value="hit" id="sort-hit"
+                   th:checked="${selectedSort == 'hit'}">
+            <label for="sort-hit">조회수순</label>
+        </div>
+        <input type="hidden" name="page" value="0">
         <input type="hidden" name="size" th:value="${boardList.size}">
         <button type="submit">조회</button>
     </form>
@@ -154,8 +164,7 @@
     <div class="button-group">
     <a th:href="@{/board/register}" class="write-btn">글쓰기</a>
         <form th:action="@{/member/logout}" method="post" sec:authorize="isAuthenticated()" style="display:inline;">
-            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
-            <button type="submit" style="background:none; border:none; cursor:pointer;">Logout</button>
+            <button type="submit">Logout</button>
         </form>
     </div>
 </div>

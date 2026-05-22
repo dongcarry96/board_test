@@ -6,21 +6,37 @@ import com.example.board.board.dto.BoardDto;
 import com.example.board.board.repository.BoardRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class BoardService {
     private final BoardRepository boardRepository;
 
-    public Page<BoardDto> getBoardList(String type, Pageable pageable) {
+    public Page<BoardDto> getBoardList(List<String> types, Pageable pageable, String sort) {
+        Sort sorting = "hit".equals(sort)
+                ? Sort.by(Sort.Direction.DESC, "boardHit")
+                : Sort.by(Sort.Direction.DESC, "createTime");
+
+        Pageable sortedPageable = PageRequest.of(
+                pageable.getPageNumber(),
+                pageable.getPageSize(),
+                sorting
+        );
+
         Page<Board> result;
-        if(type == null || type.isBlank()) {
-            result = boardRepository.findAll(pageable);
+        if (types == null || types.isEmpty()) {
+            result = boardRepository.findAll(sortedPageable);
+        } else if (types.size() == 1) {
+            result = boardRepository.findByIdBoardType(types.get(0), sortedPageable);
         } else {
-            result = boardRepository.findByIdBoardType(type, pageable);
+            result = boardRepository.findByIdBoardTypeIn(types, sortedPageable);
         }
 
         return result.map(BoardDto::fromEntity);

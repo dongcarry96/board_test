@@ -1,118 +1,101 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-        }
-        .container {
-            width: 400px;
-            margin: 50px auto;
-            padding: 20px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            border-radius: 5px;
-        }
-        h2 {
-            text-align: center;
-            color: #333;
-            margin-bottom: 30px;
-        }
-        .form-group {
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-        }
-        .form-group label {
-            width: 100px;
-            text-align: right;
-            margin-right: 15px;
-            font-weight: bold;
-        }
-        .form-control {
-            flex: 1;
-            padding: 8px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-        }
-        .btn-submit {
-            background-color: #007bff;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            width: 100%;
-            margin-top: 20px;
-        }
-        .btn-submit:hover {
-            background-color: #0056b3;
-        }
-        .error-message {
-            color: red;
-            font-size: 12px;
-            text-align: center;
-            margin-bottom: 15px;
-        }
-        .links {
-            margin-top: 20px;
-            text-align: center;
-        }
-        .links a {
-            color: #007bff;
-            text-decoration: none;
-            margin: 0 10px;
-        }
-        .links a:hover {
-            text-decoration: underline;
-        }
-        .remember-me {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin-top: 15px;
-        }
-        .remember-me input {
-            margin-right: 5px;
-        }
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .container { width: 400px; margin: 50px auto; padding: 20px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1); border-radius: 5px; }
+        h2 { text-align: center; color: #333; margin-bottom: 30px; }
+        .form-group { margin-bottom: 15px; display: flex; align-items: center; }
+        .form-group label { width: 100px; text-align: right; margin-right: 15px; font-weight: bold; }
+        .form-control { flex: 1; padding: 8px; border: 1px solid #ccc; border-radius: 4px; }
+        .btn-submit { background-color: #007bff; color: white; padding: 10px 20px;
+            border: none; border-radius: 4px; cursor: pointer; width: 100%; margin-top: 20px; }
+        .btn-submit:hover { background-color: #0056b3; }
+        .error-message { color: red; font-size: 12px; text-align: center; margin-bottom: 15px; }
+        .success-message { color: green; font-size: 12px; text-align: center; margin-bottom: 15px; }
+        .links { margin-top: 20px; text-align: center; }
+        .links a { color: #007bff; text-decoration: none; margin: 0 10px; }
     </style>
     <title>로그인</title>
 </head>
 <body>
-    <div class="container">
-        <h2>로그인</h2>
+<div class="container">
+    <h2>로그인</h2>
 
-        <!-- 에러 메시지 표시 영역-->
-        <div class="error-message" th:if="${param.error}">
-            아이디 또는 비밀번호가 일치하지 않습니다.
-        </div>
-
-        <!-- 로그인 처리 영역 -->
-        <form th:action="@{/member/login}" method="post">
-
-            <div class="form-group">
-                <label for="userId">아이디</label>
-                <input type="text" class="form-control" id="userId" name="userId" required
-                placeholder="아이디를 입력하세요">
-            </div>
-
-            <div class="form-group">
-                <label for="userPw">비밀번호</label>
-                <input type="password" class="form-control" id="userPw" name="userPw" required
-                placeholder="비밀번호를 입력하세요">
-            </div>
-
-            <div class="remember-me">
-                <input type="checkbox" id="remember-me" name="remember-me">
-                <label for="remember-me">로그인 상태 유지</label>
-            </div>
-
-            <div class="links">
-                <button type="submit">Login</button>
-                <a th:href="@{/member/join}" sec:authorize="isAnonymous()">Join</a>
-            </div>
-        </form>
+    <!-- 안내 메시지 -->
+    <div class="success-message" th:if="${param.joined}">
+        회원가입 완료! 이메일 인증 후 로그인해주세요.
     </div>
+    <div class="success-message" th:if="${param.verify == 'success'}">
+        이메일 인증 완료! 로그인해주세요.
+    </div>
+    <div class="error-message" th:if="${param.verify == 'expired'}">
+        인증 링크가 만료됐습니다. 다시 가입해주세요.
+    </div>
+    <div class="error-message" th:if="${param.verify == 'invalid'}">
+        유효하지 않은 인증 링크입니다.
+    </div>
+
+    <div class="error-message" id="errorMessage" style="display:none;"></div>
+
+    <div class="form-group">
+        <label for="userId">아이디</label>
+        <input type="text" class="form-control" id="userId" placeholder="아이디를 입력하세요">
+    </div>
+
+    <div class="form-group">
+        <label for="userPw">비밀번호</label>
+        <input type="password" class="form-control" id="userPw" placeholder="비밀번호를 입력하세요">
+    </div>
+
+    <button type="button" class="btn-submit" onclick="login()">Login</button>
+
+    <div class="links">
+        <a th:href="@{/member/join}">Join</a>
+    </div>
+</div>
+
+<script>
+    async function login() {
+        const userId = document.getElementById('userId').value;
+        const userPw = document.getElementById('userPw').value;
+
+        if (!userId || !userPw) {
+            showError('아이디와 비밀번호를 입력해주세요.');
+            return;
+        }
+
+        try {
+            const response = await fetch('/member/api/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ userId, userPw })
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                location.href = '/board/list';
+            } else {
+                showError(data.message || '로그인에 실패했습니다.');
+            }
+
+        } catch (e) {
+            showError('서버 연결에 실패했습니다.');
+        }
+    }
+
+    function showError(msg) {
+        const el = document.getElementById('errorMessage');
+        el.textContent = msg;
+        el.style.display = 'block';
+    }
+
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') login();
+    });
+</script>
 </body>
 </html>
