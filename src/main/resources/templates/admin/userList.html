@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 8px;
+            border: 1px solid #ddd;
+            text-align: center;
+        }
+        .type-cell {
+            width: 80px;
+        }
+        .create-cell {
+            width: 180px;
+        }
+        .no-cell {
+            width: 60px;
+        }
+        .title-cell {
+            width: auto;
+        }
+        .pagination {
+            margin-top: 20px;
+        }
+        .board-type {
+            margin-bottom: 10px;
+        }
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+        }
+        .pagination ul {
+            display: flex;
+            list-style: none;
+            padding: 0;
+        }
+        .pagination li {
+            margin: 0 5px;
+        }
+        .pagination li.active a {
+            background-color: #007bff;
+            color: white;
+        }
+        .pagination li a {
+            padding: 5px 10px;
+            text-decoration: none;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+        }
+        .pagination li.disabled a {
+            color: #ccc;
+            pointer-events: none;
+        }
+        .button-group {
+            float: right;
+        }
+    </style>
+    <title>관리자 페이지</title>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <a th:href="@{/member/login}" sec:authorize="isAnonymous()">Login</a>
+        <a th:href="@{/member/join}" sec:authorize="isAnonymous()">Join</a>
+    </div>
+    <table>
+        <thead>
+        <tr>
+            <th class="title-cell">회원ID</th>
+            <th class="create-cell">회원명</th>
+            <th class="create-cell">이메일</th>
+            <th class="create-cell">승인여부</th>
+            <th class="create-cell">권한</th>
+            <th class="create-cell">전화번호</th>
+            <th class="create-cell">전화번호</th>
+            <th class="create-cell">전화번호</th>
+            <th class="create-cell">주소</th>
+            <th class="create-cell">주소</th>
+            <th class="create-cell">회사</th>
+            <th class="no-cell">삭제</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="user : ${userList.content}">
+            <td th:text="${user.userId}"></td>
+<!--            <td>-->
+<!--                <a th:href="@{'/admin/read/' + ${user.userId}}"-->
+<!--                   th:text="${user.userName}">-->
+<!--                </a>-->
+<!--            </td>-->
+            <td th:text="${user.userEmail}"></td>
+            <td th:text="${user.emailVerified}"></td>
+            <td th:text="${user.userRole}"></td>
+            <td th:text="${user.userPhone1}"></td>
+            <td th:text="${user.userPhone2}"></td>
+            <td th:text="${user.userPhone3}"></td>
+            <td th:text="${user.userAddr1}"></td>
+            <td th:text="${user.userAddr2}"></td>
+            <td th:text="${user.userCompany}"></td>
+<!--            <th>-->
+<!--                <form th:action="@{'/board/delete/'+ ${user.userId}}"-->
+<!--                      method="post">-->
+<!--                    <button type="submit">삭제</button>-->
+<!--                </form>-->
+<!--            </th>-->
+        </tr>
+        </tbody>
+    </table>
+
+
+
+<!--    &lt;!&ndash; 페이징 처리 부분 &ndash;&gt;-->
+<!--    <div class="pagination" th:if="${userList.totalPages > 0}">-->
+<!--        <ul>-->
+<!--            &lt;!&ndash; 이전 페이지 &ndash;&gt;-->
+<!--            <li th:class="${userList.first ? 'disabled' : ''}">-->
+<!--                <a th:if="${not userList.first}"-->
+<!--                   th:href="@{/admin/list(page=${userList.number -1}, size=${userList.size}, type=${param.type})}">-->
+<!--                    이전-->
+<!--                </a>-->
+<!--            </li>-->
+
+<!--            &lt;!&ndash; 화면에 표시할 페이지 번호 &ndash;&gt;-->
+<!--            <li th:each="pageNum : ${#numbers.sequence(0, userList.totalPages -1)}"-->
+<!--                th:class="${pageNum == userList.number ? 'active' : ''}">-->
+<!--                <a th:href="@{/admin/list(page=${pageNum}, size=${userList.size}, type=${param.type})}"-->
+<!--                   th:text="${pageNum + 1}"></a>-->
+<!--            </li>-->
+
+<!--            &lt;!&ndash; 다음 페이지 &ndash;&gt;-->
+<!--            <li th:class="${userList.last ? 'disabled' : ''}">-->
+<!--                <a th:if="${not userList.last}"-->
+<!--                   th:href="@{/admin/list(page=${userList.number + 1}, size=${userList.size}, type=${param.type})}">-->
+<!--                    다음-->
+<!--                </a>-->
+
+<!--            </li>-->
+<!--        </ul>-->
+<!--    </div>-->
+</div>
+</body>
+</html>

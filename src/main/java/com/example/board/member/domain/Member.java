@@ -9,6 +9,8 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Entity
 @NoArgsConstructor
@@ -30,6 +32,9 @@ public class Member {
 
     @Column(name = "USER_EMAIL", unique = true   )
     private String userEmail;
+
+    @Enumerated(EnumType.STRING)
+    private UserRole userRole;
 
     @Column(name = "EMAIL_VERIFIED")
     private String emailVerified;
@@ -57,13 +62,18 @@ public class Member {
 
     @CreatedDate
     @Column(name = "CREATE_TIME")
-    private String createTime;
+    private LocalDateTime createTime;
 
     @Column(name = "MODIFIER")
     private String modifier;
 
     @LastModifiedDate
     @Column(name = "MODIFIED_TIME")
-    private String modifiedTime;
+    private LocalDateTime modifiedTime;
+
+    public void verifyEmail() {
+        this.emailVerified = "Y";
+        this.userRole = UserRole.USER;
+    }
 
 }

@@ -57,6 +57,8 @@ public class BoardController {
     public String boardRead(
             @PathVariable String type,
             @PathVariable Integer num,
+
+
             Model model
     ) {
         BoardDto board =

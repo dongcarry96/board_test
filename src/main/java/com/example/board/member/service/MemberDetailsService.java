@@ -23,7 +23,8 @@ public class MemberDetailsService implements UserDetailsService {
         return User.builder()
                 .username(member.getUserId())
                 .password(member.getUserPw())
-                .roles("USER")
+                .roles(member.getUserRole().name())
+                .disabled(!"Y".equals(member.getEmailVerified()))
                 .build();
     }
 }

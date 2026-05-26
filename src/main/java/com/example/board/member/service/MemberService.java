@@ -33,24 +33,7 @@ public class MemberService {
     public void verifyEmail(String userId) {
         Member member = memberRepository.findByUserId(userId)
                 .orElseThrow(() -> new IllegalArgumentException("사용자 없음"));
-
-        Member verified = Member.builder()
-                .userId(member.getUserId())
-                .userPw(member.getUserPw())
-                .userName(member.getUserName())
-                .userEmail(member.getUserEmail())
-                .emailVerified("Y")
-                .userPhone1(member.getUserPhone1())
-                .userPhone2(member.getUserPhone2())
-                .userPhone3(member.getUserPhone3())
-                .userAddr1(member.getUserAddr1())
-                .userAddr2(member.getUserAddr2())
-                .userCompany(member.getUserCompany())
-                .creator(member.getCreator())
-                .modifier(member.getModifier())
-                .build();
-
-        memberRepository.save(verified);
+        member.verifyEmail();
     }
 
 }
