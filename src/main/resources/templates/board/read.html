@@ -41,6 +41,42 @@
         <span class="label">조회수</span>
         <div class="content" th:text="${board.boardHit}"></div>
     </div>
+    <h3>댓글 <span th:text="${#lists.size(comments)}"></span>개</h3>
+
+    <div th:each="comment : ${comments}" style="border-bottom: 1px solid #eee; padding: 8px 0;">
+        <div th:if="${editCommentId != comment.commentId}">
+            <span th:text="${comment.creator}"></span>
+            <span style="color:gray; font-size:0.85em;" th:text="${#temporals.format(comment.createTime, 'yyyy-MM-dd HH:mm')}"></span>
+            <p th:text="${comment.commentContent}"></p>
+
+            <div th:if="${#authentication.name == comment.creator}">
+                <a th:href="@{'/board/read/' + ${board.boardType} + '/' + ${board.boardNum} + '?editCommentId=' + ${comment.commentId}}">수정</a>
+
+                <form th:action="@{'/comment/delete/' + ${comment.commentId}}" method="post" style="display:inline;">
+                    <input type="hidden" name="boardType" th:value="${board.boardType}">
+                    <input type="hidden" name="boardNum" th:value="${board.boardNum}">
+                    <button type="submit" onclick="return confirm('삭제하시겠습니까?')">삭제</button>
+                </form>
+            </div>
+        </div>
+
+        <div th:if="${editCommentId == comment.commentId}">
+            <form th:action="@{'/comment/update/' + ${comment.commentId}}" method="post">
+                <input type="hidden" name="boardType" th:value="${board.boardType}">
+                <input type="hidden" name="boardNum" th:value="${board.boardNum}">
+                <textarea name="commentContent" th:text="${comment.commentContent}" rows="2" style="width:100%;"></textarea>
+                <button type="submit">저장</button>
+                <a th:href="@{'/board/read/' + ${board.boardType} + '/' + ${board.boardNum}}">취소</a>
+            </form>
+        </div>
+    </div>
+
+    <form th:action="@{/comment/save}" method="post" style="margin-top: 15px;">
+        <input type="hidden" name="boardType" th:value="${board.boardType}">
+        <input type="hidden" name="boardNum" th:value="${board.boardNum}">
+        <textarea name="commentContent" rows="3" placeholder="댓글을 입력하세요." style="width:100%;"></textarea>
+        <button type="submit">댓글 작성</button>
+    </form>
     <div>
 
         <form th:action="@{'/board/delete/' + ${board.boardType} + '/' + ${board.boardNum}}"
@@ -75,4 +111,7 @@
 
 </div>
 </body>
+<script th:if="${errorMessage != null}">
+    alert("[[${errorMessage}]]");
+</script>
 </html>

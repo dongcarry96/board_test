@@ -71,9 +71,20 @@ public class Member {
     @Column(name = "MODIFIED_TIME")
     private LocalDateTime modifiedTime;
 
+    @Column(name = "IS_DELETED")
+    private String isDeleted;
+
+    @Column(name = "DELETED_TIME")
+    private LocalDateTime deletedTime;
+
     public void verifyEmail() {
         this.emailVerified = "Y";
         this.userRole = UserRole.USER;
+    }
+
+    public void softDelete() {
+        this.isDeleted = "Y";
+        this.deletedTime = LocalDateTime.now();
     }
 
 }

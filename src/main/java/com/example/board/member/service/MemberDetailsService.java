@@ -17,7 +17,7 @@ public class MemberDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String userId) throws UsernameNotFoundException {
-        Member member = memberRepository.findByUserId(userId)
+        Member member = memberRepository.findByUserIdAndIsDeleted(userId, "N")
                 .orElseThrow(() -> new UsernameNotFoundException("사용자를 찾을 수 없습니다."));
 
         return User.builder()
@@ -27,4 +27,6 @@ public class MemberDetailsService implements UserDetailsService {
                 .disabled(!"Y".equals(member.getEmailVerified()))
                 .build();
     }
+
+
 }

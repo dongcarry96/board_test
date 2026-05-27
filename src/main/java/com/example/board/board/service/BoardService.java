@@ -32,11 +32,11 @@ public class BoardService {
 
         Page<Board> result;
         if (types == null || types.isEmpty()) {
-            result = boardRepository.findAll(sortedPageable);
+            result = boardRepository.findAllByIsDeleted("N",sortedPageable);
         } else if (types.size() == 1) {
-            result = boardRepository.findByIdBoardType(types.get(0), sortedPageable);
+            result = boardRepository.findByIdBoardTypeAndIsDeleted(types.get(0),"N", sortedPageable);
         } else {
-            result = boardRepository.findByIdBoardTypeIn(types, sortedPageable);
+            result = boardRepository.findByIdBoardTypeInAndIsDeleted(types,"N", sortedPageable);
         }
 
         return result.map(BoardDto::fromEntity);
@@ -56,6 +56,7 @@ public class BoardService {
                             .boardHit(0)
                             .creator(boardDto.getCreator())
                             .createTime(String.valueOf(System.currentTimeMillis()))
+                            .isDeleted("N")
                             .build();
         boardRepository.save(board);
     }
@@ -70,7 +71,7 @@ public class BoardService {
     }
 
     public BoardDto PrevBoard(String type, Integer num) {
-        return boardRepository.findPrevBoard(type, num)
+        return boardRepository.findPrevBoard(type, num, "N")
                 .map(BoardDto::fromEntity)
                 .orElse(null);
     }
@@ -102,8 +103,12 @@ public class BoardService {
     }
 
     @Transactional
-    public void delete(String type, Integer num) {
-        BoardId boardId = new BoardId(type, num);
-        boardRepository.deleteById(boardId);
+    public void boardDelete(String type, Integer num, String userId) {
+        Board board = boardRepository.findById(new BoardId(type, num))
+                .orElseThrow(() -> new IllegalArgumentException("게시글을 찾을 수 없습니다."));
+        if (!board.getCreator().equals(userId)) {
+            throw new IllegalArgumentException("삭제 권한이 없습니다.");
+        }
+        board.softDelete();
     }
 }

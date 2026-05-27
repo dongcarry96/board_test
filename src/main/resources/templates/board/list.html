@@ -169,4 +169,7 @@
     </div>
 </div>
 </body>
+<script th:if="${errorMessage != null}">
+    alert("[[${errorMessage}]]");
+</script>
 </html>

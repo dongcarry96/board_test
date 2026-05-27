@@ -12,8 +12,9 @@ import java.util.List;
 import java.util.Optional;
 
 public interface BoardRepository extends JpaRepository<Board, BoardId> {
-    Page<Board> findByIdBoardType(String boardType, Pageable pageable);
-    Page<Board> findByIdBoardTypeIn(List<String> boardTypes, Pageable pageable);
+    Page<Board> findAllByIsDeleted(String IsDeleted, Pageable pageable);
+    Page<Board> findByIdBoardTypeAndIsDeleted(String boardType, String isDeleted, Pageable pageable );
+    Page<Board> findByIdBoardTypeInAndIsDeleted(List<String> boardTypes, String isDeleted, Pageable pageable);
     @Query("""
         select coalesce(max(b.id.boardNum), 0)
         from Board b
@@ -26,19 +27,24 @@ public interface BoardRepository extends JpaRepository<Board, BoardId> {
     from board
     where board_type = :type
       and board_num < :num
+        and IS_DELETED = :isDeleted
     order by board_num desc
     fetch first 1 rows only
     """, nativeQuery = true)
-    Optional<Board> findPrevBoard(String type, Integer num);
+    Optional<Board> findPrevBoard(@Param("type") String type,
+                                  @Param("num") Integer num,
+                                  @Param("isDeleted") String isDeleted);
 
     @Query(value = """
     select *
     from board
     where board_type = :type
       and board_num > :num
+        and IS_DELETED = 'N'
     order by board_num asc
     fetch first 1 rows only
     """, nativeQuery = true)
-    Optional<Board> findNextBoard(String type, Integer num);
+    Optional<Board> findNextBoard(@Param("type") String type,
+                                  @Param("num") Integer num);
 
 }

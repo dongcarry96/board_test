@@ -119,7 +119,7 @@
                 <select class="phone-select" name="userPhone1" th:value="${userJoinDto.userPhone1}">
                     <option value="">선택</option>
                     <option th:each="phone : ${phoneNumbers}"
-                            th:value="${phone.id.codeId}"
+                            th:value="${phone.codeName}"
                             th:text="${phone.codeName}">
                     </option>
                 </select>

@@ -76,40 +76,29 @@
             <th class="title-cell">회원ID</th>
             <th class="create-cell">회원명</th>
             <th class="create-cell">이메일</th>
-            <th class="create-cell">승인여부</th>
-            <th class="create-cell">권한</th>
-            <th class="create-cell">전화번호</th>
-            <th class="create-cell">전화번호</th>
             <th class="create-cell">전화번호</th>
             <th class="create-cell">주소</th>
             <th class="create-cell">주소</th>
             <th class="create-cell">회사</th>
+            <th class="create-cell">권한</th>
+            <th class="create-cell">승인여부</th>
             <th class="no-cell">삭제</th>
         </tr>
         </thead>
         <tbody>
         <tr th:each="user : ${userList.content}">
             <td th:text="${user.userId}"></td>
-<!--            <td>-->
-<!--                <a th:href="@{'/admin/read/' + ${user.userId}}"-->
-<!--                   th:text="${user.userName}">-->
-<!--                </a>-->
-<!--            </td>-->
+            <td th:text="${user.userName}"></td>
             <td th:text="${user.userEmail}"></td>
-            <td th:text="${user.emailVerified}"></td>
-            <td th:text="${user.userRole}"></td>
-            <td th:text="${user.userPhone1}"></td>
-            <td th:text="${user.userPhone2}"></td>
-            <td th:text="${user.userPhone3}"></td>
+            <td th:text="${user.userPhone1 + '-' + user.userPhone2 + '-' + user.userPhone3}"></td>
             <td th:text="${user.userAddr1}"></td>
             <td th:text="${user.userAddr2}"></td>
             <td th:text="${user.userCompany}"></td>
-<!--            <th>-->
-<!--                <form th:action="@{'/board/delete/'+ ${user.userId}}"-->
-<!--                      method="post">-->
-<!--                    <button type="submit">삭제</button>-->
-<!--                </form>-->
-<!--            </th>-->
+            <td th:text="${user.userRole}"></td>
+            <td th:text="${user.emailVerified}"></td>
+            <td>
+                <button th:data-user-id="${user.userId}" onclick="deleteUser(this.dataset.userId)">삭제</button>
+            </td>
         </tr>
         </tbody>
     </table>
@@ -146,4 +135,16 @@
 <!--    </div>-->
 </div>
 </body>
+<script>
+    function deleteUser(userId) {
+        if (!confirm(userId + ' 회원을 삭제하시겠습니까?')) return;
+
+        fetch('/admin/user/delete/' + userId, { method: 'DELETE' })
+            .then(res => res.json())
+            .then(data => {
+                alert(data.message);
+                location.reload();
+            });
+    }
+</script>
 </html>

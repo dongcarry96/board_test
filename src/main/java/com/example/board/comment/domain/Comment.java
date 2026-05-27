@@ -1,5 +1,4 @@
-package com.example.board.board.domain;
-
+package com.example.board.comment.domain;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -17,38 +16,34 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Table(name = "BOARD")
+@Table(name = "BOARD_COMMENT")
 @EntityListeners(AuditingEntityListener.class)
-public class Board {
+public class Comment {
 
-    @EmbeddedId
-    private BoardId id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "COMMENT_ID")
+    private Long commentId;
 
-    @Column(name = "BOARD_TITLE")
-    private String boardTitle;
+    @Column(name = "BOARD_TYPE")
+    private String boardType;
 
-    @Column(name = "BOARD_COMMENT")
-    private String boardComment;
+    @Column(name = "BOARD_NUM")
+    private Integer boardNum;
 
-    @Column(name = "BOARD_HIT")
-    private Integer boardHit;
+    @Column(name = "COMMENT_CONTENT")
+    private String commentContent;
 
     @Column(name = "CREATOR")
     private String creator;
 
     @CreatedDate
     @Column(name = "CREATE_TIME")
-    private String createTime;
-
-    @Column(name = "MODIFIER")
-    private String modifier;
+    private LocalDateTime createTime;
 
     @LastModifiedDate
     @Column(name = "MODIFIED_TIME")
-    private String modifiedTime;
-
-    @Column(name = "FILE_ROOT")
-    private String fileRoot;
+    private LocalDateTime modifiedTime;
 
     @Column(name = "IS_DELETED")
     private String isDeleted;
@@ -56,12 +51,12 @@ public class Board {
     @Column(name = "DELETED_TIME")
     private LocalDateTime deletedTime;
 
-    public void increaseHit() {
-        this.boardHit++;
-    }
-
     public void softDelete() {
         this.isDeleted = "Y";
         this.deletedTime = LocalDateTime.now();
+    }
+
+    public void update(String content) {
+        this.commentContent = content;
     }
 }

@@ -1,5 +1,6 @@
 package com.example.board.member.service;
 
+import com.example.board.board.domain.BoardId;
 import com.example.board.member.domain.Member;
 import com.example.board.member.dto.MemberDto;
 import com.example.board.member.repository.MemberRepository;
@@ -22,18 +23,25 @@ public class MemberService {
     }
 
     public boolean isAvailableUserId(String userId) {
-        return memberRepository.findByUserId(userId).isEmpty();
+        return memberRepository.findByUserEmailAndIsDeleted(userId, "N").isEmpty();
     }
 
     public boolean isAvailableUserEmail(String userEmail) {
-        return memberRepository.findByUserEmail(userEmail).isEmpty();
+        return memberRepository.findByUserEmailAndIsDeleted(userEmail, "N").isEmpty();
     }
 
     @Transactional
     public void verifyEmail(String userId) {
-        Member member = memberRepository.findByUserId(userId)
+        Member member = memberRepository.findByUserIdAndIsDeleted(userId, "N")
                 .orElseThrow(() -> new IllegalArgumentException("사용자 없음"));
         member.verifyEmail();
+    }
+
+    @Transactional
+    public void userDelete(String userId) {
+        Member member = memberRepository.findByUserIdAndIsDeleted(userId, "N")
+                .orElseThrow(() -> new IllegalArgumentException("사용자 없음"));
+        member.softDelete();
     }
 
 }

@@ -4,6 +4,8 @@ import com.example.board.board.domain.ComCode;
 import com.example.board.board.dto.BoardDto;
 import com.example.board.board.service.BoardService;
 import com.example.board.board.service.ComCodeService;
+import com.example.board.comment.dto.CommentDto;
+import com.example.board.comment.service.CommentService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -14,6 +16,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.HashMap;
 import java.util.List;
@@ -26,6 +29,7 @@ import java.util.Map;
 public class BoardController {
 
     private final BoardService boardService;
+    private final CommentService commentService;
     private final ComCodeService comCodeService;
 
     @GetMapping("/list")
@@ -53,18 +57,25 @@ public class BoardController {
         model.addAttribute("boardTypeMap", boardTypeMap);
         return "/board/list";
     }
+
     @GetMapping("/read/{type}/{num}")
     public String boardRead(
             @PathVariable String type,
             @PathVariable Integer num,
-
-
+            @RequestParam(required = false) Long editCommentId,
             Model model
     ) {
         BoardDto board =
                 boardService.getBoard(type, num);
         BoardDto prevBoard = boardService.PrevBoard(type, num);
         BoardDto nextBoard = boardService.NextBoard(type, num);
+
+
+        List<CommentDto> comments = commentService.getComments(type, num);
+        model.addAttribute("comments", comments);
+        model.addAttribute("editCommentId", editCommentId);
+
+
         if ("a01".equals(type)) {
             type = "일반";
         } else if ("a02".equals(type)) {
@@ -134,8 +145,15 @@ public class BoardController {
 
     @PostMapping("/delete/{type}/{num}")
     public String boardDelete(@PathVariable String type,
-                              @PathVariable Integer num) {
-        boardService.delete(type, num);
+                              @PathVariable Integer num,
+                              @AuthenticationPrincipal UserDetails userDetails,
+                              RedirectAttributes redirectAttributes) {
+        try {
+            boardService.boardDelete(type, num, userDetails.getUsername());
+        } catch (IllegalArgumentException e) {
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
+            return "redirect:/board/list";
+        }
         return "redirect:/board/list";
     }
 }
