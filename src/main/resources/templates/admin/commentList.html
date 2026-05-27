@@ -73,31 +73,30 @@
     <table>
         <thead>
         <tr>
-            <th class="title-cell">번호</th>
-            <th class="create-cell">제목</th>
-            <th class="create-cell">내용</th>
-            <th class="create-cell">타입</th>
-            <th class="create-cell">조회수</th>
+            <th class="create-cell">번호</th>
+            <th class="title-cell">댓글내용</th>
             <th class="create-cell">작성자</th>
-            <th class="create-cell">수정자</th>
             <th class="create-cell">작성시간</th>
             <th class="create-cell">수정시간</th>
+            <th class="create-cell">바로가기</th>
             <th class="no-cell">삭제</th>
         </tr>
         </thead>
         <tbody>
-        <tr th:each="board : ${boardList.content}">
-            <td th:text="${board.boardNum}"></td>
-            <td th:text="${board.boardTitle}"></td>
-            <td th:text="${board.boardComment}"></td>
-            <td th:text="${codeMap[board.boardType]}"></td>
-            <td th:text="${board.boardHit}"></td>
-            <td th:text="${board.creator}"></td>
-            <td th:text="${board.modifier}"></td>
-            <td th:text="${board.createTime}"></td>
-            <td th:text="${board.modifiedTime}"></td>
+        <tr th:each="comment : ${commentList.content}">
+            <td th:text="${comment.commentId}"></td>
+            <td th:text="${comment.commentContent}"></td>
+            <td th:text="${comment.creator}"></td>
+            <td th:text="${comment.createTime}"></td>
+            <td th:text="${comment.modifiedTime}"></td>
             <td>
-                <form th:action="@{'/admin/board/delete/' + ${board.boardType} + '/' + ${board.boardNum}}"
+                <a th:href="@{'/board/read/' + ${comment.boardType} + '/' + ${comment.boardNum}}">
+                   바로가기
+                </a>
+            </td>
+
+            <td>
+                <form th:action="@{'/admin/board/delete/' + ${comment.boardType} + '/' + ${comment.boardNum}}"
                       method="post">
                     <button type="submit">삭제</button>
                 </form>

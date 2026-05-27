@@ -27,7 +27,9 @@ public class SecurityConfig {
                 . csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/member/**").permitAll()
+                        .requestMatchers("/admin/**").permitAll()
                         .requestMatchers("/board/**").authenticated()
+                        .requestMatchers("/comment/**").authenticated()
                         .anyRequest().authenticated()
                 )
                 .exceptionHandling(exception -> exception

@@ -19,7 +19,12 @@ import java.util.List;
 public class BoardService {
     private final BoardRepository boardRepository;
 
-    public Page<BoardDto> getBoardList(List<String> types, Pageable pageable, String sort) {
+    public Page<BoardDto> getBoardList(List<String> type,
+                                       Pageable pageable,
+                                       String sort,
+                                       String searchType,
+                                       String keyword
+                                       ) {
         Sort sorting = "hit".equals(sort)
                 ? Sort.by(Sort.Direction.DESC, "boardHit")
                 : Sort.by(Sort.Direction.DESC, "createTime");
@@ -30,13 +35,21 @@ public class BoardService {
                 sorting
         );
 
+        boolean hasKeyword = keyword != null && !keyword.isBlank();
+
+        if (hasKeyword) {
+            return boardRepository
+                    .searchBoards(type, searchType, keyword, sortedPageable)
+                    .map(BoardDto::fromEntity);
+        }
+
         Page<Board> result;
-        if (types == null || types.isEmpty()) {
+        if (type == null || type.isEmpty()) {
             result = boardRepository.findAllByIsDeleted("N",sortedPageable);
-        } else if (types.size() == 1) {
-            result = boardRepository.findByIdBoardTypeAndIsDeleted(types.get(0),"N", sortedPageable);
+        } else if (type.size() == 1) {
+            result = boardRepository.findByIdBoardTypeAndIsDeleted(type.get(0),"N", sortedPageable);
         } else {
-            result = boardRepository.findByIdBoardTypeInAndIsDeleted(types,"N", sortedPageable);
+            result = boardRepository.findByIdBoardTypeInAndIsDeleted(type,"N", sortedPageable);
         }
 
         return result.map(BoardDto::fromEntity);
@@ -110,5 +123,24 @@ public class BoardService {
             throw new IllegalArgumentException("삭제 권한이 없습니다.");
         }
         board.softDelete();
+    }
+
+    @Transactional
+    public void checkDelete(List<String> boardIds, String userId) {
+        for(String boardId : boardIds) {
+            String[] parts = boardId.split(":");
+            if(parts.length != 2) {
+                throw new IllegalArgumentException("잘못된 게시글 아이디 형식입니다.");
+            }
+            String type = parts[0];
+            Integer num = Integer.parseInt(parts[1]);
+
+            Board board = boardRepository.findById(new BoardId(type, num))
+                    .orElseThrow(() -> new IllegalArgumentException("게시글을 찾을 수 없습니다."));
+            if(!board.getCreator().equals(userId)) {
+                throw new IllegalArgumentException("삭제 권한이 없습니다.");
+            }
+            board.softDelete();
+        }
     }
 }

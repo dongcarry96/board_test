@@ -6,6 +6,7 @@ import com.example.board.board.domain.ComCode;
 import com.example.board.board.dto.BoardDto;
 import com.example.board.board.service.BoardService;
 import com.example.board.board.service.ComCodeService;
+import com.example.board.comment.dto.CommentDto;
 import com.example.board.member.dto.MemberDto;
 import com.example.board.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
@@ -13,12 +14,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -41,7 +40,7 @@ public class AdminController {
         Pageable pageable = PageRequest.of(page, size);
         Page<MemberDto> userList = adminService.getUserList(pageable);
         model.addAttribute("userList",userList);
-        return "/admin/userList";
+        return "userList1";
     }
 
 
@@ -69,4 +68,17 @@ public class AdminController {
         adminService.boardDelete(type, num); // 서비스 메서드명과 일치
         return "redirect:/admin/board/list";
     }
+
+    @GetMapping("/comment/list")
+    public String commentList(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10")int size,
+            Model model
+    ) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<CommentDto> commentList = adminService.getCommentList(pageable);
+        model.addAttribute("commentList", commentList);
+        return "/admin/commentList";
+    }
+
 }

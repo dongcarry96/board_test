@@ -16,8 +16,8 @@ public class CommentDto {
     private Integer boardNum;
     private String commentContent;
     private String creator;
-    private LocalDateTime createTime;
-    private LocalDateTime modifiedTime;
+    private String createTime;
+    private String modifiedTime;
 
     public static CommentDto fromEntity(Comment comment) {
         return CommentDto.builder()

@@ -38,13 +38,17 @@ public class BoardController {
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(required = false) List<String> type,
             @RequestParam(defaultValue = "date") String sort,
+            @RequestParam(defaultValue = "title") String searchType,
+            @RequestParam(required = false) String keyword,
             Model model
     ) {
         Pageable pageable = PageRequest.of(page, size);
-        Page<BoardDto> boardList = boardService.getBoardList(type, pageable, sort);
+        Page<BoardDto> boardList = boardService.getBoardList(type, pageable, sort, searchType, keyword);
         model.addAttribute("boardList", boardList);
         model.addAttribute("selectedTypes", type != null ? type : List.of());
         model.addAttribute("selectedSort", sort);
+        model.addAttribute("selectedSearchType", searchType);
+        model.addAttribute("keyword", keyword);
         model.addAttribute("menuCode", comCodeService.getBoardTypeCodes());
         Map<String, String> boardTypeMap = new HashMap<>();
         for (ComCode code : comCodeService.getBoardTypeCodes()) {
@@ -153,6 +157,23 @@ public class BoardController {
         } catch (IllegalArgumentException e) {
             redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
             return "redirect:/board/list";
+        }
+        return "redirect:/board/list";
+    }
+
+    @PostMapping("/delete/check")
+    public String boardCheckDelete(
+            @RequestParam(required = false) List<String> boardIds,
+            @AuthenticationPrincipal UserDetails userDetails,
+            RedirectAttributes redirectAttributes) {
+        if (boardIds == null || boardIds.isEmpty()) {
+            redirectAttributes.addFlashAttribute("errorMessage", "삭제할 게시글을 선택해주세요.");
+            return "redirect:/board/list";
+        }
+        try {
+            boardService.checkDelete(boardIds, userDetails.getUsername());
+        } catch (IllegalArgumentException e) {
+            redirectAttributes.addFlashAttribute("errorMessage", e.getMessage());
         }
         return "redirect:/board/list";
     }

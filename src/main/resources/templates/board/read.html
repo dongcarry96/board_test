@@ -46,9 +46,8 @@
     <div th:each="comment : ${comments}" style="border-bottom: 1px solid #eee; padding: 8px 0;">
         <div th:if="${editCommentId != comment.commentId}">
             <span th:text="${comment.creator}"></span>
-            <span style="color:gray; font-size:0.85em;" th:text="${#temporals.format(comment.createTime, 'yyyy-MM-dd HH:mm')}"></span>
+            <span style="color:gray; font-size:0.85em;" th:text="${comment.modifiedTime}"></span>
             <p th:text="${comment.commentContent}"></p>
-
             <div th:if="${#authentication.name == comment.creator}">
                 <a th:href="@{'/board/read/' + ${board.boardType} + '/' + ${board.boardNum} + '?editCommentId=' + ${comment.commentId}}">수정</a>
 
@@ -77,13 +76,6 @@
         <textarea name="commentContent" rows="3" placeholder="댓글을 입력하세요." style="width:100%;"></textarea>
         <button type="submit">댓글 작성</button>
     </form>
-    <div>
-
-        <form th:action="@{'/board/delete/' + ${board.boardType} + '/' + ${board.boardNum}}"
-              method="post">
-            <button type="submit">삭제</button>
-        </form>
-    </div>
 
     <div>
         <ul>
@@ -104,6 +96,13 @@
     </div>
 
     <div class="btn-group">
+        <div>
+
+            <form th:action="@{'/board/delete/' + ${board.boardType} + '/' + ${board.boardNum}}"
+                  method="post">
+                <button type="submit">게시글 삭제</button>
+            </form>
+        </div>
         <a th:href="@{/board/list}" class="btn">List</a>
         <a th:href="@{'/board/update/' + ${board.boardType} + '/' + ${board.boardNum}}" class="btn">Update</a>
     </div>

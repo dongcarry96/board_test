@@ -73,42 +73,9 @@
     <span style="float: right;">
         total: [[${boardList.totalElements}]]
     </span>
-    <table>
-        <thead>
-        <tr>
-            <th class="type-cell">Type</th>
-            <th class="no-cell">No</th>
-            <th class="title-cell">Title</th>
-            <th class="create-cell">생성일자</th>
-            <th class="no-cell">Hit</th>
-            <th class="no-cell">삭제</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="board : ${boardList.content}">
-            <td th:text="${boardTypeMap[board.boardType]}"></td>
-            <td th:text="${board.boardNum}"></td>
-
-            <td>
-                <a th:href="@{'/board/read/' + ${board.boardType} + '/' + ${board.boardNum}}"
-                   th:text="${board.boardTitle}">
-                </a>
-            </td>
-            <td th:text="${board.createTime}"></td>
-            <td th:text="${board.boardHit}"></td>
-            <th>
-                <form th:action="@{'/board/delete/' + ${board.boardType} + '/' + ${board.boardNum}}"
-                      method="post">
-                    <button type="submit">삭제</button>
-                </form>
-            </th>
-        </tr>
-        </tbody>
-    </table>
 
     <form th:action="@{/board/list}" method="get">
         <div class="board-type">
-            <!-- radio → checkbox, selectedType → selectedTypes -->
             <th:block th:each="menu : ${menuCode}">
                 <input type="checkbox"
                        name="type"
@@ -117,52 +84,93 @@
                        th:checked="${selectedTypes.contains(menu.id.codeId)}">
                 <label th:for="${'type-' + menu.id.codeId}" th:text="${menu.codeName}"></label>
             </th:block>
+            <select name="sort">
+                <option value="date" th:selected="${selectedSort == 'date'}">최신순</option>
+                <option value="hit"  th:selected="${selectedSort == 'hit'}">조회수순</option>
+            </select>
         </div>
-        <div style="margin: 8px 0;">
-            <input type="radio" name="sort" value="date" id="sort-date"
-                   th:checked="${selectedSort == 'date'}">
-            <label for="sort-date">최신순</label>
 
-            <input type="radio" name="sort" value="hit" id="sort-hit"
-                   th:checked="${selectedSort == 'hit'}">
-            <label for="sort-hit">조회수순</label>
-        </div>
+        <div style="margin: 8px 0;">
+            <select name="searchType">
+                <option value="title"   th:selected="${selectedSearchType == 'title'}">제목</option>
+                <option value="creator" th:selected="${selectedSearchType == 'creator'}">작성자</option>
+                <option value="keyword" th:selected="${selectedSearchType == 'keyword'}">키워드</option>
+            </select>
+            <input type="text" name="keyword"
+                   th:value="${keyword}"
+                   placeholder="검색어를 입력하세요">
         <input type="hidden" name="page" value="0">
         <input type="hidden" name="size" th:value="${boardList.size}">
         <button type="submit">조회</button>
+        </div>
+
+    </form>
+    <form id="checkDeleteForm" th:action="@{/board/delete/check}" method="post">
+    <table>
+        <thead>
+        <tr>
+            <th class="no-cell">No</th>
+            <th class="no-cell">Type</th>
+            <th class="title-cell">Title</th>
+            <th class="no-cell">작성자</th>
+            <th class="no-cell">Hit</th>
+            <th class="create-cell">생성일자</th>
+            <th class="no-cell"><input type="checkbox" id="checkAll" title="전체선택"></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="board : ${boardList.content}">
+            <td th:text="${board.boardNum}"></td>
+            <td th:text="${boardTypeMap[board.boardType]}"></td>
+            <td>
+                <a th:href="@{'/board/read/' + ${board.boardType} + '/' + ${board.boardNum}}"
+                   th:text="${board.boardTitle}">
+                </a>
+            </td>
+            <td th:text="${board.creator}"></td>
+            <td th:text="${board.boardHit}"></td>
+            <td th:text="${board.createTime}"></td>
+            <td>
+                <input type="checkbox"
+                       name="boardIds"
+                       th:value="${board.boardType + ':' + board.boardNum}">
+            </td>
+        </tr>
+        </tbody>
+    </table>
     </form>
 
-    <!-- 페이징 처리 부분 -->
+
+
     <div class="pagination" th:if="${boardList.totalPages > 0}">
         <ul>
-            <!-- 이전 페이지 -->
             <li th:class="${boardList.first ? 'disabled' : ''}">
                 <a th:if="${not boardList.first}"
-                   th:href="@{/board/list(page=${boardList.number -1}, size=${boardList.size}, type=${param.type})}">
-                    이전
-                </a>
+                   th:href="@{/board/list(page=${boardList.number - 1}, size=${boardList.size},
+                          type=${param.type}, sort=${selectedSort},
+                          searchType=${selectedSearchType}, keyword=${keyword})}">이전</a>
             </li>
 
-            <!-- 화면에 표시할 페이지 번호 -->
-            <li th:each="pageNum : ${#numbers.sequence(0, boardList.totalPages -1)}"
+            <li th:each="pageNum : ${#numbers.sequence(0, boardList.totalPages - 1)}"
                 th:class="${pageNum == boardList.number ? 'active' : ''}">
-                <a th:href="@{/board/list(page=${pageNum}, size=${boardList.size}, type=${param.type})}"
+                <a th:href="@{/board/list(page=${pageNum}, size=${boardList.size},
+                          type=${param.type}, sort=${selectedSort},
+                          searchType=${selectedSearchType}, keyword=${keyword})}"
                    th:text="${pageNum + 1}"></a>
             </li>
 
-            <!-- 다음 페이지 -->
             <li th:class="${boardList.last ? 'disabled' : ''}">
                 <a th:if="${not boardList.last}"
-                   th:href="@{/board/list(page=${boardList.number + 1}, size=${boardList.size}, type=${param.type})}">
-                    다음
-                </a>
-
+                   th:href="@{/board/list(page=${boardList.number + 1}, size=${boardList.size},
+                          type=${param.type}, sort=${selectedSort},
+                          searchType=${selectedSearchType}, keyword=${keyword})}">다음</a>
             </li>
         </ul>
     </div>
 
     <div class="button-group">
-    <a th:href="@{/board/register}" class="write-btn">글쓰기</a>
+        <button type="button" onclick="submitCheckDelete()" class="delete-btn">선택 삭제</button>
+        <a th:href="@{/board/register}" class="write-btn">글쓰기</a>
         <form th:action="@{/member/logout}" method="post" sec:authorize="isAuthenticated()" style="display:inline;">
             <button type="submit">Logout</button>
         </form>
@@ -171,5 +179,33 @@
 </body>
 <script th:if="${errorMessage != null}">
     alert("[[${errorMessage}]]");
+</script>
+<script>
+    // 전체선택 체크박스
+    document.getElementById('checkAll').addEventListener('change', function () {
+        const checkboxes = document.querySelectorAll('#checkDeleteForm input[name="boardIds"]');
+        checkboxes.forEach(cb => cb.checked = this.checked);
+    });
+
+    // 개별 체크박스 변경 시 전체선택 상태 동기화
+    document.querySelectorAll('#checkDeleteForm input[name="boardIds"]').forEach(cb => {
+        cb.addEventListener('change', function () {
+            const all = document.querySelectorAll('#checkDeleteForm input[name="boardIds"]');
+            const checked = document.querySelectorAll('#checkDeleteForm input[name="boardIds"]:checked');
+            document.getElementById('checkAll').checked = all.length === checked.length;
+        });
+    });
+
+    // 선택 삭제 실행
+    function submitCheckDelete() {
+        const checked = document.querySelectorAll('#checkDeleteForm input[name="boardIds"]:checked');
+        if (checked.length === 0) {
+            alert('삭제할 게시글을 선택해주세요.');
+            return;
+        }
+        if (confirm(checked.length + '개의 게시글을 삭제하시겠습니까?')) {
+            document.getElementById('checkDeleteForm').submit();
+        }
+    }
 </script>
 </html>

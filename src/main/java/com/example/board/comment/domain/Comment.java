@@ -39,11 +39,11 @@ public class Comment {
 
     @CreatedDate
     @Column(name = "CREATE_TIME")
-    private LocalDateTime createTime;
+    private String createTime;
 
     @LastModifiedDate
     @Column(name = "MODIFIED_TIME")
-    private LocalDateTime modifiedTime;
+    private String modifiedTime;
 
     @Column(name = "IS_DELETED")
     private String isDeleted;

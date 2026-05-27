@@ -4,6 +4,9 @@ import com.example.board.board.domain.Board;
 import com.example.board.board.domain.BoardId;
 import com.example.board.board.dto.BoardDto;
 import com.example.board.board.repository.BoardRepository;
+import com.example.board.comment.domain.Comment;
+import com.example.board.comment.dto.CommentDto;
+import com.example.board.comment.repository.CommentRepository;
 import com.example.board.member.domain.Member;
 import com.example.board.member.dto.MemberDto;
 import com.example.board.member.repository.MemberRepository;
@@ -21,6 +24,7 @@ import java.util.List;
 public class AdminService {
     private final MemberRepository memberRepository;
     private final BoardRepository boardRepository;
+    private final CommentRepository commentRepository;
 
     public Page<MemberDto> getUserList(Pageable pageable) {
 
@@ -31,6 +35,15 @@ public class AdminService {
 
         Page<Member> result = memberRepository.findAllByIsDeleted("N", sortedPageable);
         return result.map(MemberDto::fromEntity);
+    }
+
+    public Page<CommentDto> getCommentList(Pageable pageable) {
+        Pageable sortedPageable = PageRequest.of(
+                pageable.getPageNumber(),
+                pageable.getPageSize()
+        );
+        Page<Comment> result =  commentRepository.findAllByIsDeleted("N", sortedPageable);
+        return result.map(CommentDto::fromEntity);
     }
 
     public Page<BoardDto> getBoardList(Pageable pageable) {

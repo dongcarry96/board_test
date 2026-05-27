@@ -62,14 +62,14 @@ public class Member {
 
     @CreatedDate
     @Column(name = "CREATE_TIME")
-    private LocalDateTime createTime;
+    private String createTime;
 
     @Column(name = "MODIFIER")
     private String modifier;
 
     @LastModifiedDate
     @Column(name = "MODIFIED_TIME")
-    private LocalDateTime modifiedTime;
+    private String modifiedTime;
 
     @Column(name = "IS_DELETED")
     private String isDeleted;

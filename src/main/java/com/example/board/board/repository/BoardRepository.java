@@ -47,4 +47,20 @@ public interface BoardRepository extends JpaRepository<Board, BoardId> {
     Optional<Board> findNextBoard(@Param("type") String type,
                                   @Param("num") Integer num);
 
+    @Query("""
+    SELECT b FROM Board  b
+    WHERE b.isDeleted = 'N'
+    AND (:keyword IS NULL OR (
+    (:searchType = 'title' AND b.boardTitle LIKE %:keyword%)
+    or (:searchType = 'creator' AND b.creator LIKE %:keyword%)
+    or (:searchType = 'keyword' AND (b.boardTitle LIKE %:keyword% OR b.boardComment LIKE %:keyword%))
+    ))
+    AND (:#{#type == null || #type.isEmpty()} = true OR b.id.boardType IN :type)
+    """)
+    Page<Board> searchBoards(
+            @Param("type") List<String> type,
+            @Param("searchType") String searchType,
+            @Param("keyword") String keyword,
+            Pageable pageable
+    );
 }
