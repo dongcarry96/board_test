@@ -6,6 +6,8 @@ import com.example.board.board.service.BoardService;
 import com.example.board.board.service.ComCodeService;
 import com.example.board.comment.dto.CommentDto;
 import com.example.board.comment.service.CommentService;
+import com.example.board.member.service.MemberService;
+import com.example.board.mypage.service.LastViewedService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -31,6 +33,7 @@ public class BoardController {
     private final BoardService boardService;
     private final CommentService commentService;
     private final ComCodeService comCodeService;
+    private final LastViewedService lastViewedService;
 
     @GetMapping("/list")
     public String boardList(
@@ -67,10 +70,11 @@ public class BoardController {
             @PathVariable String type,
             @PathVariable Integer num,
             @RequestParam(required = false) Long editCommentId,
+            @AuthenticationPrincipal UserDetails userDetails,
             Model model
     ) {
-        BoardDto board =
-                boardService.getBoard(type, num);
+        BoardDto board = boardService.getBoard(type, num);
+        lastViewedService.update(userDetails.getUsername(), type, num);
         BoardDto prevBoard = boardService.PrevBoard(type, num);
         BoardDto nextBoard = boardService.NextBoard(type, num);
 

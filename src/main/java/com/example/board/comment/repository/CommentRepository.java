@@ -13,4 +13,5 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
     List<Comment> findByBoardTypeAndBoardNumAndIsDeletedOrderByCreateTimeAsc(
             String boardType, Integer boardNum, String isDeleted);
     Optional<Comment> findByCommentIdAndIsDeleted(Long commentId, String isDeleted);
+    Page<Comment> findByCreatorAndIsDeleted(String creator, String isDeleted, Pageable pageable);
 }

@@ -63,4 +63,6 @@ public interface BoardRepository extends JpaRepository<Board, BoardId> {
             @Param("keyword") String keyword,
             Pageable pageable
     );
+
+    Page<Board> findByCreatorAndIsDeleted(String creator, String isDeleted, Pageable pageable);
 }

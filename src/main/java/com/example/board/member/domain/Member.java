@@ -77,6 +77,12 @@ public class Member {
     @Column(name = "DELETED_TIME")
     private LocalDateTime deletedTime;
 
+    @Column(name = "LAST_VIEWED_TYPE")
+    private String lastViewedType;
+
+    @Column(name = "LAST_VIEWED_NUM")
+    private Integer lastViewedNum;
+
     public void verifyEmail() {
         this.emailVerified = "Y";
         this.userRole = UserRole.USER;
@@ -85,6 +91,11 @@ public class Member {
     public void softDelete() {
         this.isDeleted = "Y";
         this.deletedTime = LocalDateTime.now();
+    }
+
+    public void updateLastViewed(String boardType, Integer boardNum) {
+        this.lastViewedType = boardType;
+        this.lastViewedNum  = boardNum;
     }
 
 }

@@ -4,10 +4,13 @@ package com.example.board.member.controller;
 import com.example.board.board.service.ComCodeService;
 import com.example.board.config.email.MailService;
 import com.example.board.config.jwt.JwtTokenProvider;
+import com.example.board.member.domain.ActivityType;
 import com.example.board.member.dto.MemberDto;
+import com.example.board.member.service.ActivityLogService;
 import com.example.board.member.service.MemberService;
 import jakarta.mail.MessagingException;
 import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -33,6 +36,7 @@ public class MemberController {
     private final MailService mailService;
     private final AuthenticationManager authenticationManager;
     private final JwtTokenProvider jwtTokenProvider;
+    private final ActivityLogService activityLogService;
 
     @GetMapping("/login")
     public String memberLoginVeiw() {
@@ -88,6 +92,7 @@ public class MemberController {
     @PostMapping("/login")
     @ResponseBody
     public ResponseEntity<?> apiLogin(@RequestBody Map<String, String> loginRequest,
+                                      HttpServletRequest request,
                                       HttpServletResponse response) {
         try {
             Authentication authentication = authenticationManager.authenticate(
@@ -105,6 +110,10 @@ public class MemberController {
             cookie.setMaxAge(60 * 60);
             response.addCookie(cookie);
 
+            String clientIp = getClientIp(request);
+            activityLogService.save(authentication.getName(), ActivityType.LOGIN, clientIp);
+
+
             return ResponseEntity.ok(Map.of(
                     "token", token,
                     "userId", authentication.getName()
@@ -117,5 +126,13 @@ public class MemberController {
             return ResponseEntity.status(403)
                     .body(Map.of("message", "이메일 인증 후 로그인할 수 있습니다."));
         }
+    }
+
+    private String getClientIp(HttpServletRequest request) {
+        String ip = request.getHeader("X-Forwarded-For");
+        if (ip != null && !ip.isBlank()) {
+            return ip.split(",")[0].trim();
+        }
+        return request.getRemoteAddr();
     }
 }

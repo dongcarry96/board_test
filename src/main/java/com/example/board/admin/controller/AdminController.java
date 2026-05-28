@@ -7,6 +7,7 @@ import com.example.board.board.dto.BoardDto;
 import com.example.board.board.service.BoardService;
 import com.example.board.board.service.ComCodeService;
 import com.example.board.comment.dto.CommentDto;
+import com.example.board.member.dto.ActivityLogDto;
 import com.example.board.member.dto.MemberDto;
 import com.example.board.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
@@ -40,7 +41,19 @@ public class AdminController {
         Pageable pageable = PageRequest.of(page, size);
         Page<MemberDto> userList = adminService.getUserList(pageable);
         model.addAttribute("userList",userList);
-        return "userList1";
+        return "/admin/userList";
+    }
+
+    @GetMapping("/log/list")
+    public String logList(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10")int size,
+            Model model
+    ) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<ActivityLogDto> logList = adminService.getActivityLogList(pageable);
+        model.addAttribute("logList", logList);
+        return "/admin/logList";
     }
 
 
@@ -65,7 +78,7 @@ public class AdminController {
 
     @PostMapping("/board/delete/{type}/{num}")
     public String deleteUser(@PathVariable String type, @PathVariable Integer num) {
-        adminService.boardDelete(type, num); // 서비스 메서드명과 일치
+        adminService.boardDelete(type, num);
         return "redirect:/admin/board/list";
     }
 

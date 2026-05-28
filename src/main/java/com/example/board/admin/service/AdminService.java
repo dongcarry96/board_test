@@ -7,8 +7,11 @@ import com.example.board.board.repository.BoardRepository;
 import com.example.board.comment.domain.Comment;
 import com.example.board.comment.dto.CommentDto;
 import com.example.board.comment.repository.CommentRepository;
+import com.example.board.member.domain.ActivityLog;
 import com.example.board.member.domain.Member;
+import com.example.board.member.dto.ActivityLogDto;
 import com.example.board.member.dto.MemberDto;
+import com.example.board.member.repository.ActivityLogRepository;
 import com.example.board.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -25,6 +28,7 @@ public class AdminService {
     private final MemberRepository memberRepository;
     private final BoardRepository boardRepository;
     private final CommentRepository commentRepository;
+    private final ActivityLogRepository activityLogRepository;
 
     public Page<MemberDto> getUserList(Pageable pageable) {
 
@@ -61,5 +65,15 @@ public class AdminService {
         Board board = boardRepository.findById(new BoardId(type, num))
                 .orElseThrow(() -> new IllegalArgumentException("게시글을 찾을 수 없습니다."));
         board.softDelete();
+    }
+
+    // 로그 기록 전체 가져오기
+    public Page<ActivityLogDto> getActivityLogList(Pageable pageable) {
+        Pageable sortePageable = PageRequest.of(
+                pageable.getPageNumber(),
+                pageable.getPageSize()
+        );
+        Page<ActivityLog> result = activityLogRepository.findAll(sortePageable);
+        return result.map(ActivityLogDto::fromEntity);
     }
 }
