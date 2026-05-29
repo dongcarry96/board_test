@@ -8,5 +8,4 @@ import java.util.List;
 
 public interface ActivityLogRepository extends JpaRepository<ActivityLog, Long> {
     List<ActivityLog> findByUserIdOrderByActivityDtDesc(String userId);
-    List<ActivityLog> findByUserIdAndActivityTypeOrderByActivityDtDesc(String userId, ActivityType activityType);
 }

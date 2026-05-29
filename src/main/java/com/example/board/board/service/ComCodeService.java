@@ -15,7 +15,6 @@ public class ComCodeService {
     public List<ComCode> getPhoneCodes() {
         return comCodeRepository.findByIdCodeType("phone");
     }
-
     public List<ComCode> getBoardTypeCodes() {
         return comCodeRepository.findByIdCodeType("menu");
     }

@@ -1,8 +1,11 @@
 package com.example.board.comment.service;
 
+import com.example.board.board.domain.BoardId;
+import com.example.board.board.repository.BoardRepository;
 import com.example.board.comment.domain.Comment;
 import com.example.board.comment.dto.CommentDto;
 import com.example.board.comment.repository.CommentRepository;
+import com.example.board.notification.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,6 +17,8 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class CommentService {
     private final CommentRepository commentRepository;
+    private final BoardRepository boardRepository;
+    private final NotificationService notificationService;
 
     // 댓글 목록 조회
     public List<CommentDto> getComments(String boardType, Integer boardNum) {
@@ -35,6 +40,21 @@ public class CommentService {
                 .isDeleted("N")
                 .build();
         commentRepository.save(comment);
+
+        // 댓글 작성시 알림 발송
+        boardRepository.findById(new BoardId(commentDto.getBoardType(), commentDto.getBoardNum()))
+                .ifPresent(board -> {
+                    if (!board.getCreator().equals(userId)) {
+                        notificationService.send(
+                                board.getCreator(),
+                                board.getId().getBoardType(),
+                                board.getId().getBoardNum(),
+                                board.getBoardTitle(),
+                                userId,
+                                commentDto.getCommentContent()
+                        );
+                    }
+                });
     }
 
     // 댓글 수정

@@ -100,6 +100,7 @@
             </tr>
             </thead>
             <tbody>
+            <tr th:if="${lastViewedBoard != null}">
                 <td th:text="${lastViewedBoard.boardNum}"></td>
                 <td>
                     <a th:href="@{'/board/read/' + ${lastViewedBoard.boardType} + '/' + ${lastViewedBoard.boardNum}}"
@@ -110,10 +111,47 @@
                 <td th:text="${lastViewedBoard.creator}"></td>
                 <td th:text="${lastViewedBoard.boardHit}"></td>
                 <td th:text="${lastViewedBoard.createTime}"></td>
-<!--            </tr>-->
+            </tr>
+            <tr th:if="${lastViewedBoard == null}">
+                <td colspan="6">최근 열람한 게시글이 없습니다.</td>
+            </tr>
             </tbody>
         </table>
     </br>
+
+    <table>
+        <div>예약 중인 게시글</div>
+        <thead>
+        <tr>
+            <th class="no-cell">예약번호</th>
+            <th class="title-cell">제목</th>
+            <th class="no-cell">타입</th>
+            <th class="no-cell">예약 발행 시각</th>
+            <th class="no-cell">등록 시각</th>
+            <th class="create-cell">취소</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="s : ${scheduledBoards.content}">
+            <td th:text="${s.scheduleId}"></td>
+            <td th:text="${s.boardTitle}"></td>
+            <td th:text="${boardTypeMap[s.boardType]}"></td>
+            <td>
+                <span th:text="${#temporals.format(s.scheduledTime, 'yyyy-MM-dd HH:mm')}"></span>
+            </td>
+            <td th:text="${#temporals.format(s.createTime, 'yyyy-MM-dd HH:mm')}"></td>
+            <td>
+                <form th:action="@{'/board/schedule/cancel/' + ${s.scheduleId}}"
+                      method="post" style="display:inline;"
+                      onsubmit="return confirm('예약을 취소하시겠습니까?');">
+                    <button type="submit" class="btn-cancel-schedule">취소</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    </br>
+
     <table>
         <div>내가 쓴 게시글 목록</div>
         <thead>
@@ -169,8 +207,42 @@
         </tr>
         </tbody>
     </table>
-
-
+    </br>
+    <table>
+    <div>알림</div>
+        <thead>
+        <tr>
+            <th>내용</th>
+            <th class="no-cell">작성자</th>
+            <th class="create-cell">시각</th>
+            <th class="no-cell">읽음</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="noti : ${notifications.content}"
+            th:style="${noti.isRead == 'N'} ? 'background:#dc143c;' : ''">
+            <td>
+                <a th:href="@{'/board/read/' + ${noti.boardType} + '/' + ${noti.boardNum}}">
+                    <span th:text="${noti.boardTitle}"></span>
+                    글에 대한 댓글:
+                    <span th:text="${noti.commentContent}"></span>
+                </a>
+            </td>
+            <td th:text="${noti.commenterId}"></td>
+            <td th:text="${#temporals.format(noti.createTime, 'yyyy-MM-dd HH:mm')}"></td>
+            <td>
+            <span th:if="${noti.isRead == 'N'}">확인필요</span>
+                <span th:if="${noti.isRead == 'Y'}">확인</span>
+            </td>
+        </tr>
+        <tr th:if="${notifications.content.isEmpty()}">
+            <td colspan="4">알림이 없습니다.</td>
+        </tr>
+        </tbody>
+    </table>
+    <form th:action="@{/mypage/notifications/read-all}" method="post" style="margin-left:auto;">
+        <button type="submit" class="btn btn-xs btn-default">전체 읽음</button>
+    </form>
 
     <div class="button-group">
         <form th:action="@{/member/logout}" method="post" sec:authorize="isAuthenticated()" style="display:inline;">

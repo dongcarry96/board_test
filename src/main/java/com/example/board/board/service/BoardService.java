@@ -59,7 +59,7 @@ public class BoardService {
     @Transactional
     public void register(BoardDto boardDto) {
         Integer maxNum = boardRepository.findMaxBoardNum(boardDto.getBoardType());
-        int newNum = maxNum + 1;
+        int newNum = (maxNum == null ? 0 : maxNum) + 1;
         Board board = Board.builder()
                             .id(new BoardId(
                             boardDto.getBoardType(),
@@ -68,7 +68,7 @@ public class BoardService {
                             .boardComment(boardDto.getBoardComment())
                             .boardHit(0)
                             .creator(boardDto.getCreator())
-                            .createTime(String.valueOf(System.currentTimeMillis()))
+                            .createTime(boardDto.getCreateTime())
                             .fileRoot(boardDto.getFileRoot())
                             .isDeleted("N")
                             .build();
@@ -111,6 +111,7 @@ public class BoardService {
                 .createTime(board.getCreateTime())
                 .modifier(boardDto.getModifier())
                 .modifiedTime(board.getModifiedTime())
+                .isDeleted(board.getIsDeleted())
                 .fileRoot(boardDto.getFileRoot())
                 .build();
 

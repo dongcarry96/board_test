@@ -62,11 +62,29 @@
             <div class="file-name" id="fileNameDisplay"></div>
         </div>
 
-        <div class="btn-group">
-            <button type="submit">작성</button>
-            <a style="float: right;" th:href="@{/board/list}" class="btn">List</a>
+        <div class="schedule-area" id="scheduleArea">
+            <label>예약 발행 시간</label>
+            <input type="datetime-local"
+                   id="scheduledTimeInput"
+                   name="scheduledTimeDisplay"
+                   step="60">
         </div>
 
+        <div class="submit-group">
+            <button type="submit" class="btn-submit-now" id="btnNow">즉시 등록</button>
+
+            <button type="button" class="btn-submit-schedule" id="btnSchedule"
+                    onclick="submitSchedule()">예약 등록</button>
+
+            <a th:href="@{/board/list}" class="btn">List</a>
+        </div>
+    </form>
+    <form id="scheduleForm" th:action="@{/board/schedule/register}" method="post"
+          enctype="multipart/form-data" style="display:none;">
+        <input type="hidden" name="boardType"     id="sf_boardType">
+        <input type="hidden" name="boardTitle"    id="sf_boardTitle">
+        <input type="hidden" name="boardComment"  id="sf_boardComment">
+        <input type="hidden" name="scheduledTime" id="sf_scheduledTime">
     </form>
 </div>
 <SCRIPT>
@@ -74,6 +92,44 @@
         const display = document.getElementById('fileNameDisplay');
         display.textContent = this.files.length > 0 ? '선택된 파일: ' + this.files[0].name : '';
     });
+
+    function submitSchedule() {
+        const boardType = document.getElementById('Type').value;
+        const boardTitle = document.querySelector('[name="boardTitle"]').value;
+        const scheduledTimeRaw = document.getElementById('scheduledTimeInput').value;
+        if (!boardType) {
+            alert('게시글 타입을 선택해주세요.');
+            return;
+        }
+        if (!boardTitle.trim()) {
+            alert('제목을 입력해주세요.');
+            return;
+        }
+        if (!scheduledTimeRaw) {
+            alert('예약 시각을 입력해주세요.');
+            return;
+        }
+        if (new Date(scheduledTimeRaw) <= new Date()) {
+            alert('예약 시각은 현재 시각 이후여야 합니다.');
+            return;
+        }
+
+        document.getElementById('sf_boardType').value    = boardType;
+        document.getElementById('sf_boardTitle').value   = boardTitle;
+        document.getElementById('sf_boardComment').value = document.querySelector('[name="boardComment"]').value;
+        document.getElementById('sf_scheduledTime').value = scheduledTimeRaw;
+
+        console.log('boardType:', document.getElementById('sf_boardType').value);
+        console.log('scheduledTime:', document.getElementById('sf_scheduledTime').value);
+
+        const fileInput = document.getElementById('file');
+        const cloned = fileInput.cloneNode(true);
+        fileInput.parentNode.insertBefore(cloned, fileInput);
+        fileInput.name = 'file';
+        document.getElementById('scheduleForm').appendChild(fileInput);
+
+        document.getElementById('scheduleForm').submit();
+    }
 </SCRIPT>
 </body>
 </html>

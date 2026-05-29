@@ -37,15 +37,15 @@ public class Board {
     private String creator;
 
     @CreatedDate
-    @Column(name = "CREATE_TIME")
-    private String createTime;
+    @Column(name = "CREATE_TIME", updatable = false)
+    private LocalDateTime createTime;
 
     @Column(name = "MODIFIER")
     private String modifier;
 
     @LastModifiedDate
     @Column(name = "MODIFIED_TIME")
-    private String modifiedTime;
+    private LocalDateTime modifiedTime;
 
     @Column(name = "FILE_ROOT")
     private String fileRoot;

@@ -121,36 +121,6 @@
         </tbody>
     </table>
 
-
-
-    <!--    &lt;!&ndash; 페이징 처리 부분 &ndash;&gt;-->
-    <!--    <div class="pagination" th:if="${userList.totalPages > 0}">-->
-    <!--        <ul>-->
-    <!--            &lt;!&ndash; 이전 페이지 &ndash;&gt;-->
-    <!--            <li th:class="${userList.first ? 'disabled' : ''}">-->
-    <!--                <a th:if="${not userList.first}"-->
-    <!--                   th:href="@{/admin/list(page=${userList.number -1}, size=${userList.size}, type=${param.type})}">-->
-    <!--                    이전-->
-    <!--                </a>-->
-    <!--            </li>-->
-
-    <!--            &lt;!&ndash; 화면에 표시할 페이지 번호 &ndash;&gt;-->
-    <!--            <li th:each="pageNum : ${#numbers.sequence(0, userList.totalPages -1)}"-->
-    <!--                th:class="${pageNum == userList.number ? 'active' : ''}">-->
-    <!--                <a th:href="@{/admin/list(page=${pageNum}, size=${userList.size}, type=${param.type})}"-->
-    <!--                   th:text="${pageNum + 1}"></a>-->
-    <!--            </li>-->
-
-    <!--            &lt;!&ndash; 다음 페이지 &ndash;&gt;-->
-    <!--            <li th:class="${userList.last ? 'disabled' : ''}">-->
-    <!--                <a th:if="${not userList.last}"-->
-    <!--                   th:href="@{/admin/list(page=${userList.number + 1}, size=${userList.size}, type=${param.type})}">-->
-    <!--                    다음-->
-    <!--                </a>-->
-
-    <!--            </li>-->
-    <!--        </ul>-->
-    <!--    </div>-->
 </div>
 </body>
 </html>

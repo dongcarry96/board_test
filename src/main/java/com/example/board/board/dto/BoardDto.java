@@ -4,6 +4,8 @@ import com.example.board.board.domain.Board;
 import com.example.board.board.domain.BoardId;
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -16,9 +18,9 @@ public class BoardDto {
     private String boardComment;
     private Integer boardHit;
     private String creator;
-    private String createTime;
+    private LocalDateTime createTime;
     private String modifier;
-    private String modifiedTime;
+    private LocalDateTime modifiedTime;
     private String fileRoot;
 
     public static BoardDto fromEntity(Board board) {
