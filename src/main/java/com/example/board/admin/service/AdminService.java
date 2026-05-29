@@ -30,8 +30,8 @@ public class AdminService {
     private final CommentRepository commentRepository;
     private final ActivityLogRepository activityLogRepository;
 
+    // 관리자 회원 조회
     public Page<MemberDto> getUserList(Pageable pageable) {
-
         Pageable sortedPageable = PageRequest.of(
                 pageable.getPageNumber(),
                 pageable.getPageSize()
@@ -41,6 +41,7 @@ public class AdminService {
         return result.map(MemberDto::fromEntity);
     }
 
+    // 관리자 댓글 조회
     public Page<CommentDto> getCommentList(Pageable pageable) {
         Pageable sortedPageable = PageRequest.of(
                 pageable.getPageNumber(),
@@ -50,6 +51,7 @@ public class AdminService {
         return result.map(CommentDto::fromEntity);
     }
 
+    // 관리자 게시글 조회
     public Page<BoardDto> getBoardList(Pageable pageable) {
         Pageable sortedPageable = PageRequest.of(
                 pageable.getPageNumber(),
@@ -59,15 +61,7 @@ public class AdminService {
         Page<Board> result = boardRepository.findAllByIsDeleted("N", sortedPageable);
         return result.map(BoardDto::fromEntity);
     }
-
-    @Transactional
-    public void boardDelete(String type, Integer num) {
-        Board board = boardRepository.findById(new BoardId(type, num))
-                .orElseThrow(() -> new IllegalArgumentException("게시글을 찾을 수 없습니다."));
-        board.softDelete();
-    }
-
-    // 로그 기록 전체 가져오기
+    // 로그 기록 조회
     public Page<ActivityLogDto> getActivityLogList(Pageable pageable) {
         Pageable sortePageable = PageRequest.of(
                 pageable.getPageNumber(),
@@ -76,4 +70,28 @@ public class AdminService {
         Page<ActivityLog> result = activityLogRepository.findAll(sortePageable);
         return result.map(ActivityLogDto::fromEntity);
     }
+
+    @Transactional
+    public void userDelete(String userId) {
+        Member member = memberRepository.findByUserIdAndIsDeleted(userId, "N")
+                .orElseThrow(() -> new IllegalArgumentException("회원을 찾을 수 없습니다."));
+        member.softDelete();
+    }
+
+    // 게시글 삭제
+    @Transactional
+    public void boardDelete(String type, Integer num) {
+        Board board = boardRepository.findById(new BoardId(type, num))
+                .orElseThrow(() -> new IllegalArgumentException("게시글을 찾을 수 없습니다."));
+        board.softDelete();
+    }
+
+    // 댓글 삭제
+    @Transactional
+    public void commentDelete(Long commentId) {
+        Comment comment = commentRepository.findByCommentIdAndIsDeleted(commentId, "N")
+                .orElseThrow(() -> new IllegalArgumentException("댓글을 찾을 수 없습니다."));
+        comment.softDelete();
+    }
+
 }

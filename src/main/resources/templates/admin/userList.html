@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 <head>
     <meta charset="UTF-8">
     <style>
@@ -65,15 +68,27 @@
     <title>관리자 페이지</title>
 </head>
 <body>
+<header>
+    <nav class="navbar navbar-inverse">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="#">관리자 페이지</a>
+            </div>
+            <ul class="nav navbar-nav">
+                <li class="active"><a href="/admin/user/list">회원목록</a></li>
+                <li><a href="/admin/board/list">게시글목록</a></li>
+                <li><a href="/admin/comment/list">댓글목록</a></li>
+                <li><a href="/admin/log/list">로그목록</a></li>
+            </ul>
+        </div>
+    </nav>
+</header>
 <div class="container">
-    <div class="header">
-        <a th:href="@{/member/login}" sec:authorize="isAnonymous()">Login</a>
-        <a th:href="@{/member/join}" sec:authorize="isAnonymous()">Join</a>
-    </div>
+
     <table>
         <thead>
         <tr>
-            <th class="title-cell">회원ID</th>
+            <th class="create-cell">회원ID</th>
             <th class="create-cell">회원명</th>
             <th class="create-cell">이메일</th>
             <th class="create-cell">전화번호</th>
@@ -82,7 +97,7 @@
             <th class="create-cell">회사</th>
             <th class="create-cell">권한</th>
             <th class="create-cell">승인여부</th>
-            <th class="no-cell">삭제</th>
+            <th class="create-cell">삭제</th>
         </tr>
         </thead>
         <tbody>
@@ -97,7 +112,10 @@
             <td th:text="${user.userRole}"></td>
             <td th:text="${user.emailVerified}"></td>
             <td>
-                <button th:data-user-id="${user.userId}" onclick="deleteUser(this.dataset.userId)">삭제</button>
+                <form th:action="@{'/admin/user/delete/' + ${user.userId}}"
+                      method="post">
+                    <button type="submit">삭제</button>
+                </form>
             </td>
         </tr>
         </tbody>
@@ -136,15 +154,5 @@
 </div>
 </body>
 <script>
-    function deleteUser(userId) {
-        if (!confirm(userId + ' 회원을 삭제하시겠습니까?')) return;
-
-        fetch('/admin/user/delete/' + userId, { method: 'DELETE' })
-            .then(res => res.json())
-            .then(data => {
-                alert(data.message);
-                location.reload();
-            });
-    }
 </script>
 </html>

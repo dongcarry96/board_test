@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 <head>
     <meta charset="UTF-8">
     <style>
@@ -64,16 +67,28 @@
     </style>
     <title>관리자 페이지</title>
 </head>
+<header>
+    <nav class="navbar navbar-inverse">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="#">관리자 페이지</a>
+            </div>
+            <ul class="nav navbar-nav">
+                <li><a href="/admin/user/list">회원목록</a></li>
+                <li><a href="/admin/board/list">게시글목록</a></li>
+                <li><a href="/admin/comment/list">댓글목록</a></li>
+                <li class="active"><a href="/admin/log/list">로그목록</a></li>
+            </ul>
+        </div>
+    </nav>
+</header>
 <body>
 <div class="container">
-    <div class="header">
-        <a th:href="@{/member/login}" sec:authorize="isAnonymous()">Login</a>
-        <a th:href="@{/member/join}" sec:authorize="isAnonymous()">Join</a>
-    </div>
+
     <table>
         <thead>
         <tr>
-            <th class="title-cell">로그ID</th>
+            <th class="create-cell">로그ID</th>
             <th class="create-cell">회원ID</th>
             <th class="create-cell">활동타입</th>
             <th class="create-cell">IP주소</th>
@@ -84,43 +99,43 @@
         <tr th:each="logList : ${logList.content}">
             <td th:text="${logList.logId}"></td>
             <td th:text="${logList.userId}"></td>
-            <td th:text="${logList.userId}"></td>
+            <td th:text="${logList.activityType}"></td>
             <td th:text="${logList.clientIp}"></td>
-            <td th:text="${logList.clientIp}"></td>
+            <td th:text="${logList.activityDt}"></td>
         </tr>
         </tbody>
     </table>
 
 
 
-    <!--    &lt;!&ndash; 페이징 처리 부분 &ndash;&gt;-->
-    <!--    <div class="pagination" th:if="${userList.totalPages > 0}">-->
-    <!--        <ul>-->
-    <!--            &lt;!&ndash; 이전 페이지 &ndash;&gt;-->
-    <!--            <li th:class="${userList.first ? 'disabled' : ''}">-->
-    <!--                <a th:if="${not userList.first}"-->
-    <!--                   th:href="@{/admin/list(page=${userList.number -1}, size=${userList.size}, type=${param.type})}">-->
-    <!--                    이전-->
-    <!--                </a>-->
-    <!--            </li>-->
+        <!-- 페이징 처리 부분 -->
+        <div class="pagination" th:if="${activityDt.totalPages > 0}">
+            <ul>
+                <!-- 이전 페이지 -->
+                <li th:class="${activityDt.first ? 'disabled' : ''}">
+                    <a th:if="${not activityDt.first}"
+                       th:href="@{/admin/list(page=${activityDt.number -1}, size=${activityDt.size}, type=${param.type})}">
+                        이전
+                    </a>
+                </li>
 
-    <!--            &lt;!&ndash; 화면에 표시할 페이지 번호 &ndash;&gt;-->
-    <!--            <li th:each="pageNum : ${#numbers.sequence(0, userList.totalPages -1)}"-->
-    <!--                th:class="${pageNum == userList.number ? 'active' : ''}">-->
-    <!--                <a th:href="@{/admin/list(page=${pageNum}, size=${userList.size}, type=${param.type})}"-->
-    <!--                   th:text="${pageNum + 1}"></a>-->
-    <!--            </li>-->
+                <!-- 화면에 표시할 페이지 번호 -->
+                <li th:each="pageNum : ${#numbers.sequence(0, activityDt.totalPages -1)}"
+                    th:class="${pageNum == activityDt.number ? 'active' : ''}">
+                    <a th:href="@{/admin/list(page=${pageNum}, size=${activityDt.size})}"
+                       th:text="${pageNum + 1}"></a>
+                </li>
 
-    <!--            &lt;!&ndash; 다음 페이지 &ndash;&gt;-->
-    <!--            <li th:class="${userList.last ? 'disabled' : ''}">-->
-    <!--                <a th:if="${not userList.last}"-->
-    <!--                   th:href="@{/admin/list(page=${userList.number + 1}, size=${userList.size}, type=${param.type})}">-->
-    <!--                    다음-->
-    <!--                </a>-->
+                <!-- 다음 페이지 -->
+                <li th:class="${activityDt.last ? 'disabled' : ''}">
+                    <a th:if="${not activityDt.last}"
+                       th:href="@{/admin/list(page=${activityDt.number + 1}, size=${activityDt.size})}">
+                        다음
+                    </a>
 
-    <!--            </li>-->
-    <!--        </ul>-->
-    <!--    </div>-->
+                </li>
+            </ul>
+        </div>
 </div>
 </body>
 <script>

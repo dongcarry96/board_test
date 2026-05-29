@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6" xmlns="http://www.w3.org/1999/html">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 <head>
     <meta charset="UTF-8">
     <style>
@@ -64,6 +67,19 @@
     </style>
     <title>게시판 목록</title>
 </head>
+<header>
+    <nav class="navbar navbar-inverse">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="/board/list">해오름인포텍</a>
+            </div>
+            <ul class="nav navbar-nav">
+                <li><a href="/board/list">게시글</a></li>
+                <li><a href="/mypage/me">마이페이지</a></li>
+            </ul>
+        </div>
+    </nav>
+</header>
 <body>
 <div class="container">
     <div class="header">

@@ -64,4 +64,8 @@ public class Board {
         this.isDeleted = "Y";
         this.deletedTime = LocalDateTime.now();
     }
+
+    public void updateFile(String fileRoot) {
+        this.fileRoot = fileRoot;
+    }
 }

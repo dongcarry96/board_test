@@ -1,5 +1,9 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 <head>
     <meta charset="UTF-8">
     <title>게시글 작성</title>
@@ -10,10 +14,23 @@
         textarea { min-height: 200px; }
     </style>
 </head>
+<header>
+    <nav class="navbar navbar-inverse">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="/board/list">해오름인포텍</a>
+            </div>
+            <ul class="nav navbar-nav">
+                <li><a href="/board/list">게시글</a></li>
+                <li><a href="/mypage/me">마이페이지</a></li>
+            </ul>
+        </div>
+    </nav>
+</header>
 <body>
 <div class="container">
     <h2>게시글 작성</h2>
-    <form th:action="@{/board/register}" method="post">
+    <form th:action="@{/board/register}" method="post" enctype="multipart/form-data">
 
             <label for="Type">게시글 타입</label>
             <select id="Type" name="boardType" required>
@@ -39,6 +56,12 @@
             <input type="text" name="creator" th:value="${boardDto.creator}" readonly>
         </div>
 
+        <div class="form-group">
+            <label>첨부파일</label>
+            <input type="file" id="file" name="file">
+            <div class="file-name" id="fileNameDisplay"></div>
+        </div>
+
         <div class="btn-group">
             <button type="submit">작성</button>
             <a style="float: right;" th:href="@{/board/list}" class="btn">List</a>
@@ -46,5 +69,11 @@
 
     </form>
 </div>
+<SCRIPT>
+    document.getElementById('file').addEventListener('change', function () {
+        const display = document.getElementById('fileNameDisplay');
+        display.textContent = this.files.length > 0 ? '선택된 파일: ' + this.files[0].name : '';
+    });
+</SCRIPT>
 </body>
 </html>

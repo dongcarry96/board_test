@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-        lang="ko">
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 <head>
     <meta charset="UTF-8">
     <title>게시글 수정</title>
@@ -12,6 +15,19 @@
         .btn-group { margin-top: 20px; float: right;}
     </style>
 </head>
+<header>
+    <nav class="navbar navbar-inverse">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="/board/list">해오름인포텍</a>
+            </div>
+            <ul class="nav navbar-nav">
+                <li><a href="/board/list">게시글</a></li>
+                <li><a href="/mypage/me">마이페이지</a></li>
+            </ul>
+        </div>
+    </nav>
+</header>
 <body>
     <h2>게시글 수정</h2>
     <div class="container">
@@ -44,6 +60,23 @@
             <input type="text" th:value="${boardDto.creator}" readonly>
         </div>
 
+        <div class="form-group">
+            <label>첨부파일</label>
+
+            <div id="currentFileArea" th:if="${originalFileName != null}">
+                <div class="file-box">
+                    📎 <span th:text="${originalFileName}"></span>
+                    <button type="button" class="delete-btn" onclick="removeCurrentFile()">✕ 삭제</button>
+                </div>
+            </div>
+
+            <input type="hidden" id="deleteFile" name="deleteFile" value="false">
+
+            <div id="newFileArea" style="margin-top: 8px;">
+                <input type="file" id="file" name="file">
+                <div class="file-name" id="fileNameDisplay"></div>
+            </div>
+
             <div class="btn-group">
                 <a th:href="@{/board/list}" class="btn">List</a>
                 <a th:href="@{'/board/update/' + ${boardDto.boardType} + '/' + ${boardDto.boardNum}}">
@@ -52,5 +85,17 @@
             </div>
     </form>
     </div>
+
+<script>
+    function removeCurrentFile() {
+        document.getElementById('currentFileArea').style.display = 'none';
+        document.getElementById('deleteFile').value = 'true';
+    }
+
+    document.getElementById('file').addEventListener('change', function () {
+        const display = document.getElementById('fileNameDisplay');
+        display.textContent = this.files.length > 0 ? '선택된 파일: ' + this.files[0].name : '';
+    });
+</script>
 </body>
 </html>

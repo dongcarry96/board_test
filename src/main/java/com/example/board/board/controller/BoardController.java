@@ -4,6 +4,7 @@ import com.example.board.board.domain.ComCode;
 import com.example.board.board.dto.BoardDto;
 import com.example.board.board.service.BoardService;
 import com.example.board.board.service.ComCodeService;
+import com.example.board.board.service.FileService;
 import com.example.board.comment.dto.CommentDto;
 import com.example.board.comment.service.CommentService;
 import com.example.board.member.service.MemberService;
@@ -18,8 +19,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,6 +37,7 @@ public class BoardController {
     private final CommentService commentService;
     private final ComCodeService comCodeService;
     private final LastViewedService lastViewedService;
+    private final FileService fileService;
 
     @GetMapping("/list")
     public String boardList(
@@ -93,6 +97,11 @@ public class BoardController {
         } else {
             type = "자유";
         }
+
+        if (board.getFileRoot() != null && !board.getFileRoot().isBlank()) {
+            model.addAttribute("originalFileName", fileService.extractOriginalFileName(board.getFileRoot()));
+        }
+
         model.addAttribute("board", board);
         model.addAttribute("type",type);
         model.addAttribute("num",num);
@@ -113,13 +122,26 @@ public class BoardController {
         model.addAttribute("comCodes", comCodeService.getBoardTypeCodes());
         return "/board/register";
     }
+
     @PostMapping("/register")
     public String boardRegister(BoardDto boardDto,
-                                @AuthenticationPrincipal UserDetails userDetails
+                                @RequestParam(value = "file", required = false) MultipartFile file,
+                                @AuthenticationPrincipal UserDetails userDetails,
+                                RedirectAttributes redirectAttributes
                                 ) {
         if (userDetails != null) {
             boardDto.setCreator(userDetails.getUsername());
         }
+
+        try {
+            String fileRoot = fileService.saveFile(file);
+            boardDto.setFileRoot(fileRoot);
+        } catch (IOException e) {
+            log.error("파일 저장 실패", e);
+            redirectAttributes.addFlashAttribute("errorMessage", "파일 업로드 중 오류가 발생했습니다.");
+            return "redirect:/board/register";
+        }
+
         boardService.register(boardDto);
         return "redirect:/board/list";
     }
@@ -138,7 +160,10 @@ public class BoardController {
     public String boardUpdate(@PathVariable String type,
                               @PathVariable Integer num,
                               BoardDto boardDto,
-                              @AuthenticationPrincipal UserDetails userDetails
+                              @RequestParam(value = "file", required = false) MultipartFile file,
+                              @RequestParam(value = "deleteFile", required = false) String deleteFile,
+                              @AuthenticationPrincipal UserDetails userDetails,
+                              RedirectAttributes redirectAttributes
     ) {
 
         boardDto.setBoardType(type);
@@ -146,6 +171,26 @@ public class BoardController {
         if (userDetails != null) {
             boardDto.setModifier(userDetails.getUsername());
         }
+
+        BoardDto existing = boardService.getBoard(type, num);
+        String currentFileRoot = existing.getFileRoot();
+
+        try {
+            if (file != null && !file.isEmpty()) {
+                fileService.deleteFile(currentFileRoot);
+                boardDto.setFileRoot(fileService.saveFile(file));
+            } else if ("true".equals(deleteFile)) {
+                fileService.deleteFile(currentFileRoot);
+                boardDto.setFileRoot(null);
+            } else {
+                boardDto.setFileRoot(currentFileRoot);
+            }
+        } catch (IOException e) {
+            log.error("파일 저장 실패", e);
+            redirectAttributes.addFlashAttribute("errorMessage", "파일 업로드 중 오류가 발생했습니다.");
+            return "redirect:/board/update/" + type + "/" + num;
+        }
+
         boardService.update(boardDto);
 
         return "redirect:/board/read/" + type + "/" + num;
@@ -166,10 +211,9 @@ public class BoardController {
     }
 
     @PostMapping("/delete/check")
-    public String boardCheckDelete(
-            @RequestParam(required = false) List<String> boardIds,
-            @AuthenticationPrincipal UserDetails userDetails,
-            RedirectAttributes redirectAttributes) {
+    public String boardCheckDelete(@RequestParam(required = false) List<String> boardIds,
+                                    @AuthenticationPrincipal UserDetails userDetails,
+                                    RedirectAttributes redirectAttributes) {
         if (boardIds == null || boardIds.isEmpty()) {
             redirectAttributes.addFlashAttribute("errorMessage", "삭제할 게시글을 선택해주세요.");
             return "redirect:/board/list";

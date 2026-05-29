@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity6">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 <head>
     <meta charset="UTF-8">
     <style>
@@ -64,16 +67,28 @@
     </style>
     <title>관리자 페이지</title>
 </head>
+<header>
+    <nav class="navbar navbar-inverse">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="#">관리자 페이지</a>
+            </div>
+            <ul class="nav navbar-nav">
+                <li><a href="/admin/user/list">회원목록</a></li>
+                <li class="active"><a href="/admin/board/list">게시글목록</a></li>
+                <li><a href="/admin/comment/list">댓글목록</a></li>
+                <li><a href="/admin/log/list">로그목록</a></li>
+            </ul>
+        </div>
+    </nav>
+</header>
 <body>
 <div class="container">
-    <div class="header">
-        <a th:href="@{/member/login}" sec:authorize="isAnonymous()">Login</a>
-        <a th:href="@{/member/join}" sec:authorize="isAnonymous()">Join</a>
-    </div>
+
     <table>
         <thead>
         <tr>
-            <th class="title-cell">번호</th>
+            <th class="create-cell">번호</th>
             <th class="create-cell">제목</th>
             <th class="create-cell">내용</th>
             <th class="create-cell">타입</th>
@@ -82,7 +97,7 @@
             <th class="create-cell">수정자</th>
             <th class="create-cell">작성시간</th>
             <th class="create-cell">수정시간</th>
-            <th class="no-cell">삭제</th>
+            <th class="create-cell">삭제</th>
         </tr>
         </thead>
         <tbody>

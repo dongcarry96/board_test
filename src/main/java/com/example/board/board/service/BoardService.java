@@ -69,6 +69,7 @@ public class BoardService {
                             .boardHit(0)
                             .creator(boardDto.getCreator())
                             .createTime(String.valueOf(System.currentTimeMillis()))
+                            .fileRoot(boardDto.getFileRoot())
                             .isDeleted("N")
                             .build();
         boardRepository.save(board);
@@ -110,6 +111,7 @@ public class BoardService {
                 .createTime(board.getCreateTime())
                 .modifier(boardDto.getModifier())
                 .modifiedTime(board.getModifiedTime())
+                .fileRoot(boardDto.getFileRoot())
                 .build();
 
         boardRepository.save(board);
